@@ -1,0 +1,8 @@
+[2020-02-28 15:26:49,665] -- [C:/github/EAS/log/Log.py][line:56] -- DEBUG: -- [ip:1.1.1.1] -- [username:none] -- [event:visit_search_page] -- [message:normal]
+[2020-02-28 15:26:49,668] -- [C:/github/EAS/log/Log.py][line:57] -- DEBUG:---
+[2020-02-28 15:26:54,677] -- [C:/github/EAS/log/Log.py][line:56] -- DEBUG: -- [ip:1.1.1.1] -- [username:none] -- [event:visit_search_page] -- [message:normal]
+[2020-02-28 15:26:54,690] -- [C:/github/EAS/log/Log.py][line:57] -- DEBUG:---
+[2020-02-28 15:27:14,526] -- [C:/github/EAS/log/Log.py][line:56] -- DEBUG: -- [ip:1.1.1.1] -- [username:none] -- [event:visit_search_page] -- [message:normal]
+[2020-02-28 15:27:14,533] -- [C:/github/EAS/log/Log.py][line:57] -- DEBUG:---
+[2020-02-28 15:27:19,541] -- [C:/github/EAS/log/Log.py][line:56] -- DEBUG: -- [ip:1.1.1.1] -- [username:none] -- [event:visit_search_page] -- [message:normal]
+[2020-02-28 15:27:19,568] -- [C:/github/EAS/log/Log.py][line:57] -- DEBUG:---

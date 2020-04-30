@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <style>
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        .table th, .table td {
+            vertical-align: middle!important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h3></h3>
+    <!--    显示搜索框-->
+    <div class="row">
+        <div class="col-md-12 ">
+            <form method="post">
+                <div class="input-group input-group-newsletterp">
+                    <div class="col-md-1">
+
+                    </div>
+<!--                    <div class="col-md-2">-->
+<!--                        <select name="select_type" class="selectpicker show-tick form-control" data-live-search="true">-->
+<!--                            <option>搜索专家</option>-->
+<!--                            &lt;!&ndash;                                <option>搜索院校</option>&ndash;&gt;-->
+<!--                        </select>-->
+<!--                    </div>-->
+                    <div class="col-md-8">
+                        <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
+                    </div>
+                    <div class="col-md-1">
+                        <input type="submit" class="form-control input-lg" name="submit" value="搜索">
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <ul id="nav_father" class="nav nav-tabs">
+<!--          <li class="nav-item">-->
+<!--            <a id="nav1" class="nav-link active" href="#">论文相似成果</a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a id="nav2" class="nav-link" href="#">专利相似成果</a>-->
+<!--          </li>-->
+        </ul>
+    </div>
+    <br>
+    <br>
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-8 list-group">
+<!--          <button type="button" class="list-group-item list-group-item-action active">-->
+<!--              {% if type == "teacher": %}-->
+<!--                <p>拥有相似成果的专家：</p>-->
+<!--              {% else %}-->
+<!--                <p>拥有相似成果的院校：</p>-->
+<!--              {% endif %}-->
+<!--          </button>-->
+            <table class="table table-no-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">序号</th>
+                    <th scope="col">学校</th>
+                    <th scope="col">学院</th>
+                    <th scope="col">专家</th>
+                    <th scope="col">相似成果</th>
+                </tr>
+                </thead>
+                <tbody id="outcome_put"></tbody>
+            </table>
+<!--            <div id="outcome_put">-->
+
+<!--            </div>-->
+        </div>
+        <div class="col-md-3">
+            <div id="show_school"></div>
+        </div>
+    </div>
+
+    <footer class="navbar-fixed-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div class="layui-box layui-laypage layui-laypage-molv" id="layui-laypage-1" style="margin-top: 10px;font-size: 14px">
+                        <a href="javascript:" class="layui-laypage-first" data-page="0">首页</a>
+                        <a href="javascript:" class="layui-laypage-pre" data-page="2">上一页</a>
+                        <a href="javascript:" class="layui-laypage-next" data-page="2">下一页</a>
+                        <a href="javascript:" class="layui-laypage-last" data-page="2">末页</a>
+                        <a href="#" id="layui-laypage-count" ></a>
+    <!--                    <span id="layui-laypage-count"></span>-->
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+    </footer>
+    <div id="page_ctrl" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+    </div>
+{% endblock %}
+
+{% block script %}
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        console.log("-----------------77777");
+        var transport = {
+            "outcome_paper_list": {{ outcome_paper_list|tojson }},
+            "outcome_patent_list": {{ outcome_patent_list|tojson }},
+            "type": {{ type|tojson }},
+            "input_key": {{ input_key|tojson }},
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/search_outcome.js') }}"></script>
+{% endblock %}

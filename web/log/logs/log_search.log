@@ -1,0 +1,5 @@
+[2020-04-30 15:58:02,780] -- [C:\github\EAS\app.py][line:47] -- INFO: -- [ip:127.0.0.1] -- [username:none] -- [event:visit_search_page] -- [message:normal|搜索专家|病毒感染]
+[2020-04-30 15:59:01,722] -- [C:\github\EAS\app.py][line:97] -- INFO: -- [ip:127.0.0.1] -- [username:none] -- [event:visit_institution_page] -- [message:normal|武汉大学基础医学院]
+[2020-04-30 15:59:05,563] -- [C:\github\EAS\app.py][line:78] -- INFO: -- [ip:127.0.0.1] -- [username:none] -- [event:visit_school_page] -- [message:normal|武汉大学]
+[2020-04-30 15:59:17,055] -- [C:\github\EAS\app.py][line:78] -- INFO: -- [ip:127.0.0.1] -- [username:none] -- [event:visit_school_page] -- [message:normal|武汉大学]
+[2020-04-30 15:59:37,525] -- [C:\github\EAS\app.py][line:78] -- INFO: -- [ip:127.0.0.1] -- [username:none] -- [event:visit_school_page] -- [message:normal|武汉大学]

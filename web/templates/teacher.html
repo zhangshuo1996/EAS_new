@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block head %}
+<!--    <link typerel="stylesheet" href="{{ url_for('static', filename='js/search.js')}}">-->
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <fieldset class="card-mine">
+            <legend>基本信息</legend>
+            <div id="basic_info" class="row">
+                <div class="img-container col-sm-3 col-md-2 align-middle">
+                    <div id="image-name" class="bg-primary align-middle" style="width: 120px; height:150px;text-align:center; font-size:48px;vertical-align:middle;">
+                        {{ teacher["name"][0] }}
+                    </div>
+                </div>
+                <div class="col-sm-9 col-md-4">
+                    <div class="scholar-name"><h3><span class="badge badge-light" ><a href="#">{{ teacher["name"] }}</a> </span></h3></div>
+                    <div class="scholar-depart">
+                        {{ teacher["school"] }} - {{ teacher["institution"] }}
+                    </div>
+                    {% if teacher["title"] %}
+                        <div class="scholar-depart half">职称： {{ teacher["title"] }}</div>
+                    {% endif %}
+                    {% if teacher["email"] %}
+                        <div class="scholar-depart half">邮箱： {{ teacher["email"] }}</div>
+                    {% endif %}
+
+                    {% if teacher["phone"]%}
+                        <div class="scholar-depart half">手机： {{ teacher["phone"] }}</div>
+                    {% endif %}
+                    <div class="scholar-tags">
+<!--                        <strong>标签</strong>-->
+                        {% if teacher["age"] %}
+                            <span>{{ teacher['age'] }}岁</span>
+                        {% endif %}
+                    </div>
+                    <div class="scholar-tags">
+                        {% if teacher["homepage"] %}
+                            <span><a href="{{ teacher['homepage'] }}">主页链接</a> </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-9 col-md-6">
+                        <div style="padding:20px;width:60%;height:60%;">
+                            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<!--                                   <div id="main" style="width: 300px; height:200px;">-->
+                                   <div id="main" style="width: 400px; height:200px;">
+                                   </div>
+                        </div>
+                </div>
+            </div>
+        </fieldset>
+
+        {% if teacher["edu_exp"] %}
+            <fieldset id="edu-exp" class="row card-mine">
+                <legend>教育经历</legend>
+                <p>{{ teacher["edu_exp"] }}</p>
+            </fieldset>
+        {% endif %}
+
+        <fieldset id="achieve-info" class="row card-mine">
+            <legend>科研成果</legend>
+            <u class="nav nav-pills nav-fill">
+                <li class="nav-item">
+                    <a href="#paper-list" class="nav-link active" data-toggle="tab">
+                        <i class="glyphicon glyphicon-book"></i>论文成果
+                        ({% if 'papers' in teacher %} {{ teacher["papers"] | length}} {% else %} 0 {% endif %})
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#patent-list" class="nav-link" data-toggle="tab">
+                        <i class="glyphicon glyphicon-hdd"></i> 发明专利
+                        ({% if 'patents' in teacher %}{{ teacher['patents'] | length }}{% else %}0{% endif %})
+                    </a>
+                </li>
+            </u>
+
+            <div class="tab-content">
+                <ul class="tab-pane fade in active show" id="paper-list">
+                     {% if "papers" in teacher %}
+                        {% for paper in teacher["papers"] %}
+                            <li>
+                                <div class="d-inline">
+                                    <i class="glyphicon glyphicon-book"></i> 《{{ paper["paper_name"] }}》
+                                </div>
+                                <div class="d-inline">
+                                    <span>{{ paper["year"] }}年 </span>
+                                    <span>发表自《{{ paper["org"] }}》</span>
+                                    <span>引用次数：{{ paper["cited_num"] }}</span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+                <ul class="tab-pane fade in" id="patent-list">
+                    {% if "patents" in teacher %}
+                        {% for patent in teacher["patents"] %}
+                            <li>
+                                <div class="d-inline">
+                                    <i class="glyphicon glyphicon-hdd"></i> {{ patent["title"] }}&nbsp;
+                                </div>
+                                <div class="d-inline">
+                                    <span>申报单位: </span>
+                                        {% for p in patent["applicant"] %}
+                                            {{ p }}
+                                        {% endfor %}
+                                    <span>{{ patent["year"]}}</span>
+                                    <span>发明人: </span>
+                                        {% for inventor in patent["inventor"] %}
+                                            {{ inventor }}
+                                        {% endfor %}
+                                    <br>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </fieldset>
+
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+
+
+<!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- echart核心文件   -->
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+<!--    <script src="{{ url_for('static', filename='js/echarts-all.js') }}"></script>-->
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+    <script type="text/javascript">
+        console.log("-----------------77777");
+        var transport = {
+            "teacher_net": {{ teacher_net|tojson }},
+            "teacher_info": {{ teacher|tojson }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/teacher.js') }}"></script>
+
+{% endblock %}
+
