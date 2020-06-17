@@ -1,0 +1,43 @@
+{% extends 'auth/base.html' %}
+{% block title %}用户登录-昆山开发区科技局信息系统{% endblock %}
+
+{% block login_form %}
+    <div class="card border-primary mb-3 m-auto pt-2 pb-2">
+        <div class="card-header">
+            <!-- Title -->
+            <h4 class="card-header-title">
+                账号密码登录
+            </h4>
+        </div>
+        <div class="card-body">
+            <form method="post" class="form-signin">
+                <div id="login-by-account" class="text-primary pb-2">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.telephone(onkeyup="value=value.replace(/[^\w\.\/]/ig,'')") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password }}
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <div class="col">
+                        {{ form.remember }}
+                        {{ form.remember.label }}
+                    </div>
+                </div>
+                <div class="row m-0">
+                    {{ form.submit }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap_v4.min.js') }}"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}

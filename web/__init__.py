@@ -1,8 +1,9 @@
 import os
 from flask import Flask, render_template, current_app, url_for
 from web.blueprints.search import search_bp
+from web.blueprints.auth import auth_bp
 from web.settings import configuration
-# from web.extensions import bootstrap
+from web.extensions import bootstrap
 from web.extensions import login_manager
 from web.utils import db
 from web.models import UserType, AffairType, affair_id_endpoints
@@ -43,12 +44,13 @@ def register_logger(app):
 
 
 def register_extensions(app):
-    # bootstrap.init_app(app)
+    bootstrap.init_app(app)
     login_manager.init_app(app)
 
 
 def register_blueprints(app):
-    app.register_blueprint(search_bp, url_prefix='/')
+    app.register_blueprint(auth_bp, url_prefix='/')
+    app.register_blueprint(search_bp, url_prefix='/search')
 
 
 def register_errors(app):

@@ -1,7 +1,7 @@
-# from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 
-# bootstrap = Bootstrap()
+bootstrap = Bootstrap()
 login_manager = LoginManager()
 
 # 当访问到受login_required时默认跳转到下面的视图

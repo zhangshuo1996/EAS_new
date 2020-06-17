@@ -17,9 +17,6 @@ search_bp = Blueprint("search", __name__)
 
 @search_bp.route('/')
 def index():
-
-    ip = request.remote_addr  # 获取用户ip
-    # log.logger.debug(log.combine_msg(ip=ip, username="none", event="visit_start_page", message="normal"))
     return render_template('base.html')
 
 
@@ -32,56 +29,35 @@ def hunt():
     """
     form = InputKeyForm()
     input_key = request.form.get('input_key')  # 输入的内容
-    # select_type = request.form.get('select_type')  # 搜索的类型
     select_type = "搜索专家"
     if input_key is not None:
         try:
-            paperService = PaperSearchService(input_key)  # 搜索论文服务
-            patentService = PatentSearchService(input_key)  # 搜索专利服务
+            paper_service = PaperSearchService(input_key)  # 搜索论文服务
+            patent_service = PatentSearchService(input_key)  # 搜索专利服务
             if select_type == "搜索专家":
-                outcome_paper_list = paperService.construct_teacher_in_res()
-                outcome_patent_list = patentService.construct_teacher_in_res()
-                ip = request.remote_addr
-                # log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_search_page",
-                #                                 message="normal|" + select_type + "|" + input_key))
-                return render_template("search_outcome.html", input_key=input_key,
-                                       outcome_paper_list=outcome_paper_list, outcome_patent_list=outcome_patent_list, type="teacher")
+                outcome_paper_list = paper_service.construct_teacher_in_res()
+                outcome_patent_list = patent_service.construct_teacher_in_res()
+                return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=outcome_paper_list, outcome_patent_list=outcome_patent_list, type="teacher")
             else:
-                outcome_paper_list = paperService.construct_institution_info()
-                outcome_patent_list = patentService.construct_institution_info()
-                ip = request.remote_addr
-                # log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_search_page",
-                #                                 message="normal|" + select_type + "|" + input_key))
+                outcome_paper_list = paper_service.construct_institution_info()
+                outcome_patent_list = patent_service.construct_institution_info()
                 return render_template("search_outcome.html", outcome_paper_list=outcome_paper_list, outcome_patent_list=outcome_patent_list, type="institution")
-
-        except Exception as e:
-            ip = request.remote_addr
-            # log.logger.error(log.combine_msg(ip=ip, username="none", event="visit_search_page", message="error|" + select_type + "|" + input_key + "|" + traceback.format_exc()))
-            # print("error when input key : %s" % e)
+        except Exception:
             return render_template('error.html')
     else:
-        ip = request.remote_addr
-        # log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_search_page",
-        #                                 message="normal|none"))
         return render_template('search.html', form=form)
 
 
 @search_bp.route('/school/<school>')
 def school(school):
-    schoolService = SchoolService()
+    school_service = SchoolService()
     try:
-        introduction = schoolService.get_introduction(school)
-        key_discipline_list = schoolService.get_key_discipline(school)
-        ip = request.remote_addr
-        # log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_school_page",
-        #                                 message="normal|" + school))
+        introduction = school_service.get_introduction(school)
+        key_discipline_list = school_service.get_key_discipline(school)
         return render_template("school.html", school=school, introduction=introduction, key_discipline_list=key_discipline_list)
     except Exception as e:
         print(e)
         print("未找到该大学")
-        ip = request.remote_addr
-        # log.logger.warn(log.combine_msg(ip=ip, username="none", event="visit_school_page",
-        #                                 message="warn|" + school + "|" + traceback.format_exc()))
         return render_template('error.html')
 
 
@@ -89,8 +65,8 @@ def school(school):
 def institution(school, institution):
     print(school, institution)
     try:
-        institutionService = InstitutionService()
-        outcome_list, discipline = institutionService.get_institution_patent(school, institution)
+        institution_service = InstitutionService()
+        outcome_list, discipline = institution_service.get_institution_patent(school, institution)
         ip = request.remote_addr
         log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_institution_page",
                                         message="normal|" + school + institution))

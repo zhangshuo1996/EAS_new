@@ -2,18 +2,14 @@
 // var outcome_paper_list = transport.outcome_paper_list;
 var outcome_patent_list = transport.outcome_patent_list;
 var input_key = transport.input_key;
-debugger
 //默认选择是paper
 var outcome_list = outcome_patent_list;
 //搜索结果的返回类型
 var search_type = transport.type;
 // 当前选中的学校 包含在结果中的
 var cur_outcome_list = outcome_list;
-debugger
 
-// var paper_school_dict = {};
 var patent_school_dict = {};
-// extract_paper_school_list();
 extract_patent_school_list();
 //默认学校列表选择是paper结果中的
 var school_dict = patent_school_dict;
@@ -21,14 +17,12 @@ var currentPage = 1; // 当前是第几页
 var pageSize = 6; // 每页显示的数量
 var total = outcome_list.length; // 总共的数量
 var pageNumber = parseInt(total / pageSize) + 1; //总共的页数
-// inner_html();
 // 显示右侧边栏的学校
 show_school(school_dict);
 // 更新搜索结果内容
 update_show_result();
 document.getElementById("layui-laypage-count").innerHTML = "共" + total + "条";
 
-debugger
 fill_input();
 
 /*
@@ -56,7 +50,6 @@ function fill_input(){
 提取出专利搜索结果中的学校列表
  */
 function extract_patent_school_list() {
-    debugger
     for(let i = 0; i < outcome_patent_list.length; i++){
         let school = outcome_patent_list[i]["basic_info"]["school"];
         let school_id = outcome_patent_list[i]["basic_info"]["school_id"];
@@ -72,6 +65,9 @@ function extract_patent_school_list() {
  */
 function show_school(school_dict) {
     let html = [];
+    html.push(`
+            <label><input id="select_all" type="checkbox" value="全选" checked="true" />全选</label> 
+        `);
     for(let school_id in school_dict){
         let row_data = `
             <label><input class="select_school" name="Fruit" type="checkbox" value="${school_id}" checked="true" />${school_dict[school_id]}</label> 
@@ -80,6 +76,31 @@ function show_school(school_dict) {
     }
     let innerString = html.join(`<br>`);
     document.getElementById("show_school").innerHTML = innerString;
+}
+
+/*
+高校全选/全不选 点击事件
+ */
+$("#show_school").on("click", "#select_all", function () {
+    let is_selected = $(this).is(":checked");
+    if(is_selected){
+        update_check_box(true);
+    }else{
+        update_check_box(false);
+    }
+    update_show_result();
+});
+
+
+/*
+更新右边选择框全选或者全不选
+ */
+function update_check_box(val){
+    let row_list = $("#show_school label .select_school");
+    for(let i = 0; i < row_list.length; i++){
+        let row = $(row_list[i]);
+        row.prop("checked", val);
+    }
 }
 
 
@@ -150,7 +171,6 @@ function inner_html(select_school_id_list){
     console.log(outcome_list);
     for(let i = pageSize * (currentPage - 1); i < pageSize * (currentPage-1) + pageSize && i < total; i++){
         let outcome = cur_outcome_list[i];
-        debugger
         let index = i+1;
         if(search_type == "teacher"){
             let school_id_str = outcome["basic_info"]["school_id"].toString();
@@ -215,7 +235,6 @@ function inner_html(select_school_id_list){
         }
     }
     innerString = html.join("");
-    debugger
     document.getElementById("outcome_put").innerHTML = innerString;
 }
 
