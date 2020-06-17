@@ -23,7 +23,6 @@ Pygments==2.3.1
 PyMySQL==0.9.3
 python-logstash==0.4.6
 pytz==2019.3
-pywin32==227
 requests==2.22.0
 six==1.14.0
 urllib3==1.24.3
