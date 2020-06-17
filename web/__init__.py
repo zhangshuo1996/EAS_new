@@ -119,3 +119,8 @@ def register_template_context(app):
 #         input_path = os.path.join(current_app.root_path, endpoint, filename)
 #         kwargs['v'] = int(os.stat(input_path).st_mtime)
 #     return url_for(endpoint, **kwargs)
+
+
+@login_manager.user_loader
+def load_user():
+    return None

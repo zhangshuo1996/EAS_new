@@ -2,7 +2,7 @@ version: "2.2"
 services:
  web:
   build: .
-  image: kunshan_system
+  image: EAS_new_system
   volumes:
   - .:/code
  nginx:
