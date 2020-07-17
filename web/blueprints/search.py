@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import Flask, render_template, request
+from flask import render_template, request
 from web.forms import InputKeyForm
 from web.service.PaperSearchService import PaperSearchService
 from web.service.PatentSearchService import PatentSearchService
@@ -32,16 +32,16 @@ def hunt():
     select_type = "搜索专家"
     if input_key is not None:
         try:
-            paper_service = PaperSearchService(input_key)  # 搜索论文服务
+            # paper_service = PaperSearchService(input_key)  # 搜索论文服务
             patent_service = PatentSearchService(input_key)  # 搜索专利服务
             if select_type == "搜索专家":
-                outcome_paper_list = paper_service.construct_teacher_in_res()
+                # outcome_paper_list = paper_service.construct_teacher_in_res()
                 outcome_patent_list = patent_service.construct_teacher_in_res()
-                return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=outcome_paper_list, outcome_patent_list=outcome_patent_list, type="teacher")
+                return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")
             else:
-                outcome_paper_list = paper_service.construct_institution_info()
+                # outcome_paper_list = paper_service.construct_institution_info()
                 outcome_patent_list = patent_service.construct_institution_info()
-                return render_template("search_outcome.html", outcome_paper_list=outcome_paper_list, outcome_patent_list=outcome_patent_list, type="institution")
+                return render_template("search_outcome.html", outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="institution")
         except Exception:
             return render_template('error.html')
     else:
@@ -86,7 +86,6 @@ def institution(school, institution):
 @search_bp.route('/teacher/<teacher_id>', methods=["GET"])
 def teacher(teacher_id):
     """
-
     :param teacher_id:
     :return:
     """

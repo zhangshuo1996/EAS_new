@@ -4,13 +4,15 @@
 """
 import requests
 import json
-# from web.utils.dbhelper import DBhelper
 import sys
-sys.path.append("..")
+import logging
 from web.dao.PatentDAO import PatentDAO
 
+sys.path.append("..")
+logger = logging.getLogger(__name__)
 
-class PatentSearchService():
+
+class PatentSearchService:
     """
     为搜索提供服务
     """
@@ -19,7 +21,6 @@ class PatentSearchService():
     id_dis_dict = {}
     teacher_patent = []
     patentDao = None
-
 
     def __init__(self, input_key):
         """
@@ -37,8 +38,8 @@ class PatentSearchService():
         根据用户的输入内容, 通过调用restful服务获取与之相关的成果id
         :return:
         """
-        data = {"type": "search", "K": 100, "key": input}
-        url = "http://39.100.224.138:6438/patent"
+        data = {"K": 100, "key": input}
+        url = "http://39.100.224.138:8777/search"
         data_json = json.dumps(data)
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, data=data_json, headers=headers)
@@ -138,7 +139,6 @@ class PatentSearchService():
                     "patent_id": d["patent_id"]
                 })
         return return_list
-
 
     def construct_institution_info(self):
         """

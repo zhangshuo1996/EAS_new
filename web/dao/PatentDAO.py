@@ -32,19 +32,32 @@ class PatentDAO():
         """
         print("-------------------------------------get_teacher_patent----------------------------------")
         # sql = "select teacher_id, patent_id from teacher_patent3 where patent_id in ("
+        # sql = """
+        #     select tp.teacher_id teacher_id, tp.patent_id patent_id, p.title patent_name
+        #     from teacher_patent3 tp left join patent3 p
+        #     on tp.patent_id = p.id
+        #     where patent_id in (
+        # """
         sql = """
-            select tp.teacher_id teacher_id, tp.patent_id patent_id, p.title patent_name
-            from teacher_patent3 tp left join patent3 p
-            on tp.patent_id = p.id
-            where patent_id in (
+            select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name
+            from clean_inventor_backup i
+            LEFT JOIN c_inventor_patent_backup ip
+            on i.id = ip.inventor_id
+            LEFT JOIN patent p
+            on ip.patent_id = p.id
+            LEFT JOIN school s
+            on i.school_id = s.id
+            where p.id in (
         """
         teacher_patent = []
+        # sql = "("
         if len(patent_id_list) != 0:
             for patent_id in patent_id_list:
                 sql += str(patent_id) + ","
             sql = sql[0:-1]
             sql += ")"
-            teacher_patent = db.execute(sql)
+            print(sql)
+            teacher_patent = db.select(sql)
         self.teacher_patent = teacher_patent
 
     def get_teacher_basic_info(self):
@@ -65,20 +78,28 @@ class PatentDAO():
         """
         print("-------------------------------------get_teacher_basic_info----------------------------------")
         teacher_patent = self.teacher_patent
-        sql = "SELECT es_teacher.ID teacher_id, es_school.`NAME` school, es_institution.`NAME` institution," \
-              " es_teacher.`NAME` name, es_teacher.TITLE title, " \
-              " es_teacher.SCHOOL_ID school_id, es_teacher.INSTITUTION_ID institution_id" \
-              " FROM es_teacher, es_school, es_institution " \
-              " where es_teacher.SCHOOL_ID = es_school.ID " \
-              " and es_teacher.INSTITUTION_ID = es_institution.ID " \
-              "and es_teacher.ID in ("
+        sql = """
+            select i.id teacher_id, i.name  name, s.name school, s.id school_id, 
+            "学院" institution, "教授" title, 111 institution_id
+            from clean_inventor_backup i
+            LEFT JOIN school s
+            on i.school_id = s.id
+            where i.id in (
+        """
+        # sql = "SELECT es_teacher.ID teacher_id, es_school.`NAME` school, es_institution.`NAME` institution," \
+        #       " es_teacher.`NAME` name, es_teacher.TITLE title, " \
+        #       " es_teacher.SCHOOL_ID school_id, es_teacher.INSTITUTION_ID institution_id" \
+        #       " FROM es_teacher, es_school, es_institution " \
+        #       " where es_teacher.SCHOOL_ID = es_school.ID " \
+        #       " and es_teacher.INSTITUTION_ID = es_institution.ID " \
+        #       "and es_teacher.ID in ("
 
         for d in teacher_patent:
             teacher_id = d["teacher_id"]
             sql += str(teacher_id) + ","
         sql = sql[0:-1]
         sql += ")"
-        res = db.execute(sql)
+        res = db.select(sql)
         teacher_basic_info = {}
         for d in list(res):
             tmp_dict = {
