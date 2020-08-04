@@ -16,14 +16,14 @@
     <!--    显示搜索框-->
     <div class="row">
         <div class="col-md-12 ">
-            <form method="post">
+            <form method="post"  action="{{ url_for("search.hunt") }}">
                 <div class="input-group input-group-newsletterp">
                     <div class="col-md-1"></div>
                     <div class="col-md-8">
                         <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
                     </div>
                     <div class="col-md-1">
-                        <input type="submit" class="form-control input-lg" name="submit" value="搜索">
+                        <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">
                     </div>
                     <div class="col-md-2"></div>
                 </div>
@@ -33,27 +33,28 @@
     <div class="row">
         <div class="col-md-3"></div>
         <ul id="nav_father" class="nav nav-tabs">
-<!--          <li class="nav-item">-->
-<!--            <a id="nav1" class="nav-link active" href="#">论文相似成果</a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a id="nav2" class="nav-link" href="#">专利相似成果</a>-->
-<!--          </li>-->
+
         </ul>
     </div>
     <br>
     <br>
-
     <div class="row">
+        <div class="col-sm-5"></div>
+        <div class="col-sm-2">
+            <div class="d-none" id="load_cycle">
+                <div class="spinner-border"role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                正在检索，请稍后
+            </div>
+
+        </div>
+        <div class="col-sm-5"></div>
+    </div>
+
+    <div class="row" id="outcome_list">
         <div class="col-md-1"></div>
         <div class="col-md-8 list-group">
-<!--          <button type="button" class="list-group-item list-group-item-action active">-->
-<!--              {% if type == "teacher": %}-->
-<!--                <p>拥有相似成果的专家：</p>-->
-<!--              {% else %}-->
-<!--                <p>拥有相似成果的院校：</p>-->
-<!--              {% endif %}-->
-<!--          </button>-->
             <table class="table table-no-bordered">
                 <thead>
                 <tr>
@@ -64,18 +65,18 @@
                     <th scope="col">相似成果</th>
                 </tr>
                 </thead>
-                <tbody id="outcome_put"></tbody>
-            </table>
-<!--            <div id="outcome_put">-->
+                <tbody id="outcome_put">
 
-<!--            </div>-->
+                </tbody>
+            </table>
         </div>
+        {# 显示高校， 用于勾选 #}
         <div class="col-md-3">
             <div id="show_school"></div>
         </div>
     </div>
 
-    <footer class="navbar-fixed-bottom">
+    <footer class="navbar-fixed-bottom" id="change_page">
         <div class="container">
             <div class="row">
                 <div class="col-md-3"></div>
@@ -99,16 +100,9 @@
 {% endblock %}
 
 {% block script %}
-
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-
-    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-
-    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script type="text/javascript">

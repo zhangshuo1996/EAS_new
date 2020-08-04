@@ -1,20 +1,20 @@
+/*
+搜索点击事件监听
+ */
 
-//$(function (){
-//    $.ajax({
-//        type: "get",
-//        url: "/search",
-//        contentType: "application/json; charset=utf-8",
-//        dataType: "json",
-//        success: function(){
-//            console.log("---")
-//        }
-//    })
-//})
-console.log("-----")
+
+$("#submit_button").on("click", function () {
+    let input_key = $("#input_key").val();
+    if(input_key != ""){
+        // 显示加载圆圈
+        $("#load_cycle").attr("class", "");
+    }
+});
+
 function search(){
     var input_key = document.getElementById("input_key2").value;
-    console.log(input_key)
-    console.log("0----")
+    console.log(input_key);
+    console.log("0----");
     $.ajax({
         url: '/get_input',
         data: {"input_key": input_key},
@@ -24,8 +24,7 @@ function search(){
             console.log(data["data"]);
             fill(data);
         }
-
-    })
+    });
 }
 
 /*

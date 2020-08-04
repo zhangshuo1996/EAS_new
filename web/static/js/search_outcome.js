@@ -1,49 +1,82 @@
-// 选择的类型是论文还是专利， 默认是论文
-// var outcome_paper_list = transport.outcome_paper_list;
-var outcome_patent_list = transport.outcome_patent_list;
-var input_key = transport.input_key;
-//默认选择是paper
-var outcome_list = outcome_patent_list;
+let outcome_patent_list = transport.outcome_patent_list;
+let old_input_key = transport.input_key;
+//默认选择是patent
+let outcome_list = outcome_patent_list;
 //搜索结果的返回类型
-var search_type = transport.type;
+let search_type = transport.type;
+
 // 当前选中的学校 包含在结果中的
-var cur_outcome_list = outcome_list;
-
-var patent_school_dict = {};
-extract_patent_school_list();
-//默认学校列表选择是paper结果中的
-var school_dict = patent_school_dict;
-var currentPage = 1; // 当前是第几页
-var pageSize = 6; // 每页显示的数量
-var total = outcome_list.length; // 总共的数量
-var pageNumber = parseInt(total / pageSize) + 1; //总共的页数
-// 显示右侧边栏的学校
-show_school(school_dict);
-// 更新搜索结果内容
-update_show_result();
-document.getElementById("layui-laypage-count").innerHTML = "共" + total + "条";
-
-fill_input();
+let cur_outcome_list;
+let patent_school_dict = {};
+//默认学校列表选择是patent结果中的
+let school_dict;
+let currentPage; // 当前是第几页
+let pageSize; // 每页显示的数量
+let total; // 总共的数量
+let pageNumber; //总共的页数
+update_global_and_page();
 
 /*
 填充搜索框中的搜索内容
  */
 function fill_input(){
-    $("#input_key").val(input_key);
+    $("#input_key").val(old_input_key);
 }
 
 /*
-提取出论文搜索结果中的学校列表
+点击搜索按钮时， 判断是否有输入， 若有，显示搜索圆圈， 隐藏上次的搜索结果
  */
-// function extract_paper_school_list() {
-//     for(let i = 0; i < outcome_paper_list.length; i++){
-//         let school = outcome_paper_list[i]["basic_info"]["school"];
-//         let school_id = outcome_paper_list[i]["basic_info"]["school_id"];
-//         if(!paper_school_dict.hasOwnProperty(school_id)){
-//             paper_school_dict[school_id] = school;
-//         }
-//     }
-// }
+$("#submit_button").on("click", function () {
+    let new_input_key = $("#input_key").val();
+    if(new_input_key != "" && new_input_key != old_input_key){
+        // 显示加载圆圈
+        show_load_cycle();
+        get_search_outcome(new_input_key);
+    }
+});
+
+/*
+异步获取新的搜索结果数据
+ */
+function get_search_outcome(new_input_key) {
+    $.ajax({
+        dataType: 'json',
+        type: 'get',
+        data: {"input_key": new_input_key},
+        url: 'search/get_search_outcome',
+        success: function (json_data) {
+            outcome_patent_list = json_data.data;
+            hide_load_cycle();
+            update_global_and_page();
+        }
+    })
+}
+
+/*
+获取搜索结果后，更新全局变量以及页面显示
+ */
+function update_global_and_page() {
+    outcome_list = outcome_patent_list;
+    cur_outcome_list = outcome_list;
+    extract_patent_school_list();
+    // 当前选中的学校 包含在结果中的
+    cur_outcome_list = outcome_list;
+
+    patent_school_dict = {};
+    extract_patent_school_list();
+    //默认学校列表选择是patent结果中的
+    school_dict = patent_school_dict;
+    currentPage = 1; // 当前是第几页
+    pageSize = 6; // 每页显示的数量
+    total = outcome_list.length; // 总共的数量
+    pageNumber = parseInt(total / pageSize) + 1; //总共的页数
+    // 显示右侧边栏的学校
+    show_school(school_dict);
+    // 更新搜索结果内容
+    update_show_result();
+    document.getElementById("layui-laypage-count").innerHTML = "共" + total + "条";
+    fill_input();
+}
 
 
 /*
@@ -53,7 +86,7 @@ function extract_patent_school_list() {
     for(let i = 0; i < outcome_patent_list.length; i++){
         let school = outcome_patent_list[i]["basic_info"]["school"];
         let school_id = outcome_patent_list[i]["basic_info"]["school_id"];
-        if(!patent_school_dict.hasOwnProperty(school_id)){
+        if(patent_school_dict.hasOwnProperty(school_id) == false){
             patent_school_dict[school_id] = school;
         }
     }
@@ -93,6 +126,15 @@ $("#show_school").on("click", "#select_all", function () {
 
 
 /*
+学校列表复选框点击事件
+ */
+$("#show_school label .select_school").on("change", function () {
+    update_show_result();
+});
+
+
+
+/*
 更新右边选择框全选或者全不选
  */
 function update_check_box(val){
@@ -102,14 +144,6 @@ function update_check_box(val){
         row.prop("checked", val);
     }
 }
-
-
-/*
-学校列表复选框点击事件
- */
-$("#show_school label .select_school").on("change", function () {
-    update_show_result();
-});
 
 
 /*
@@ -149,8 +183,8 @@ function update_show_result() {
 将换页后 页面最下方显示页码的部分更新
 */
 function update_page_number(){
-    var innerString = "";
-    for(var i = 1; i <= pageNumber; i++){
+    let innerString = "";
+    for(let i = 1; i <= pageNumber; i++){
         if(i == currentPage){
             innerString +=  "<div class=\"btn-group mr-2\" role=\"group\" aria-label=\"First group\">" +
                                 "<button type=\"button\" class=\"btn btn-secondary\">" + i + "</button>" +
@@ -167,7 +201,6 @@ function update_page_number(){
 */
 function inner_html(select_school_id_list){
     let html = [];
-
     console.log(outcome_list);
     for(let i = pageSize * (currentPage - 1); i < pageSize * (currentPage-1) + pageSize && i < total; i++){
         let outcome = cur_outcome_list[i];
@@ -238,17 +271,27 @@ function inner_html(select_school_id_list){
     document.getElementById("outcome_put").innerHTML = innerString;
 }
 
-// $("#nav1").on('click', function(){
-//     document.getElementById('nav1').setAttribute("class", "nav-link active");
-//     document.getElementById('nav2').setAttribute("class", "nav-link");
-//     outcome_list = outcome_paper_list;
-//     select_type = 0;
-//     school_dict = paper_school_dict;
-//     currentPage = 1;
-//     inner_html();
-//     show_school(school_dict);
-//
-// });
+
+/*
+隐藏搜索结果，翻页和学校列表， 显示加载圆圈
+ */
+function show_load_cycle(){
+    $("#outcome_list").attr("class", "d-none");
+    $("#change_page").attr("class", "d-none");
+    // 显示加载圆圈
+    $("#load_cycle").attr("class", "");
+}
+
+/*
+显示搜索结果，翻页和学校列表， 隐藏加载圆圈
+ */
+function hide_load_cycle(){
+    $("#outcome_list").attr("class", "row");
+    $("#change_page").attr("class", "row");
+    // 显示加载圆圈
+    $("#load_cycle").attr("class", "d-none");
+}
+
 
 $("#nav2").on('click', function(){
     document.getElementById('nav2').setAttribute("class", "nav-link active");

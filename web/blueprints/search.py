@@ -27,15 +27,12 @@ def hunt():
     获取要搜索的类型以及输入的内容， 根据搜索类型调用相应的SearchService
     :return:
     """
-    form = InputKeyForm()
-    input_key = request.form.get('input_key')  # 输入的内容
+    input_key = request.form.get("input_key")
     select_type = "搜索专家"
     if input_key is not None:
         try:
-            # paper_service = PaperSearchService(input_key)  # 搜索论文服务
             patent_service = PatentSearchService(input_key)  # 搜索专利服务
             if select_type == "搜索专家":
-                # outcome_paper_list = paper_service.construct_teacher_in_res()
                 outcome_patent_list = patent_service.construct_teacher_in_res()
                 return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")
             else:
@@ -45,7 +42,19 @@ def hunt():
         except Exception:
             return render_template('error.html')
     else:
-        return render_template('search.html', form=form)
+        return render_template('search.html')
+
+
+@search_bp.route("/get_search_outcome")
+def get_search_outcome():
+    """
+    根据搜索的关键字获取搜索结果， ajax专用
+    :return:
+    """
+    input_key = request.args.get("input_key")
+    patent_service = PatentSearchService(input_key)  # 搜索专利服务
+    outcome_patent_list = patent_service.construct_teacher_in_res()
+    return {"data": outcome_patent_list}
 
 
 @search_bp.route('/school/<school>')
