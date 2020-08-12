@@ -27,7 +27,6 @@ class PatentSearchService:
         初始化service
         :param input_key:
         """
-
         self.get_ids_by_input(input_key)  # 调用restful服务获得相似的成果id
         self.combine_id_distance()
         self.patentDao = PatentDAO(patent_id_list=self.patent_id_list)
@@ -111,16 +110,15 @@ class PatentSearchService:
         teacher_basic_info = self.patentDao.get_teacher_basic_info()
         teacher_info_list = []  # 最终待返回的与给定结果相关的教师信息：
         for teacher_id in teacher_all_patent:
-            teacher_info = {}
-            teacher_info["id"] = teacher_id
-            teacher_info["patent_list"] = self.get_patent_by_teacher_id(teacher_id)
-            teacher_info["basic_info"] = teacher_basic_info[teacher_id]
-            teacher_info["achieve_nums"] = len(teacher_all_patent[teacher_id])  # 教师个人成果数量
-            teacher_info["dis_average"] = teacher_avg_min[teacher_id][0]  # 平均距离
-            teacher_info["dis_min"] = teacher_avg_min[teacher_id][1]  # 最小距离
+            teacher_info = {
+                "id": teacher_id,
+                "patent_list": self.get_patent_by_teacher_id(teacher_id),
+                "basic_info": teacher_basic_info[teacher_id],
+                "achieve_nums": len(teacher_all_patent[teacher_id]),
+                "dis_average": teacher_avg_min[teacher_id][0],
+                "dis_min": teacher_avg_min[teacher_id][1]
+            }
             # TODO: 综合打分？？
-            # teacher_info["score"] =
-
             teacher_info_list.append(teacher_info)
         teacher_info_list.sort(key=lambda info: info["achieve_nums"], reverse=True)  # 按照成果数量排序
         return teacher_info_list

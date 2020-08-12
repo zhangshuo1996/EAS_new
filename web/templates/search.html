@@ -1,36 +1,23 @@
 {% extends 'base.html' %}
 {% block head %}
-<!--    <link typerel="stylesheet" href="{{ url_for('static', filename='js/search.js')}}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
 {% endblock %}
 {% block content %}
     <ul>
-        <div class="row">
-            <div class="col-md-12 ">
-                <form method="post" action="{{ url_for("search.hunt") }}">
-                    <div class="input-group input-group-newsletterp">
-                        <div class="col-md-1">
-
-                        </div>
-                        <div class="col-md-2">
-                            <select name="select_type" class="selectpicker show-tick form-control" data-live-search="true">
-                                <option>搜索专家</option>
-<!--                                <option>搜索院校</option>-->
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
-                        </div>
-                        <div class="col-md-1" id="submit_button">
-                            <input type="submit" class="form-control input-lg" name="submit"  value="搜索">
-                        </div>
-                        <div class="col-md-3"></div>
-                    </div>
-                </form>
+        <form method="post" action="{{ url_for("search.hunt") }}">
+            <div class="row input-group input-group-newsletterp" style="padding-top: 20px">
+                <div class="col-md-5"></div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
+                </div>
+                <div class="col-md-1" id="submit_button">
+                    <input type="submit" class="form-control input-lg" name="submit"  value="搜索">
+                </div>
             </div>
+        </form>
         </div>
         <br>
         <br>
-
         <div class="row">
             <div class="col-sm-5"></div>
             <div class="col-sm-2">
@@ -48,10 +35,9 @@
 {% endblock %}
 
 {% block script %}
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
 
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 {% endblock %}

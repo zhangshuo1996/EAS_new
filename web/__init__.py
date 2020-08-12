@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, current_app, url_for
 from web.blueprints.search import search_bp
+from web.blueprints.main import main_bp
 from web.blueprints.auth import auth_bp
 from web.settings import configuration
 from web.extensions import bootstrap
@@ -49,7 +50,8 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    app.register_blueprint(auth_bp, url_prefix='/')
+    # app.register_blueprint(auth_bp, url_prefix='/')
+    app.register_blueprint(main_bp, url_prefix='/')
     app.register_blueprint(search_bp, url_prefix='/search')
 
 

@@ -199,78 +199,114 @@ function update_page_number(){
 /*
 将换页后的内容更新
 */
+// function inner_html(select_school_id_list){
+//     let html = [];
+//     console.log(outcome_list);
+//     for(let i = pageSize * (currentPage - 1); i < pageSize * (currentPage-1) + pageSize && i < total; i++){
+//         let outcome = cur_outcome_list[i];
+//         let index = i+1;
+//         let school_id_str = outcome["basic_info"]["school_id"].toString();
+//         let is_existed = select_school_id_list.indexOf(school_id_str) > -1;
+//         if(!is_existed){
+//             continue;
+//         }
+//         let row_data = `
+//                     <tr>
+//                         <th scope="row">${index}</th>
+//                         <td><a href="/school/${outcome["basic_info"]["school"]}">${outcome["basic_info"]["school"]}</a></td>
+//                         <td><a href="/institution/${outcome["basic_info"]["school"]}/${outcome["basic_info"]["institution"]}">${outcome["basic_info"]["institution"]}</a></td>
+//                         <td><a href="/teacher/${outcome["id"]}">${outcome["basic_info"]["name"]}</div></td>
+//                         <td>
+//                             <div class="accordion" id="accordionExample">
+//
+//                                 <div class="card-header" id="headingOne">
+//                                   <h2 class="mb-0">
+//                                     <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
+//                                       相似成果数量：${outcome["achieve_nums"]}
+//                                     </button>
+//                                   </h2>
+//                                 </div>
+//                                 <div id="collapse${i}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+//                                   <div class="card-body">
+//         `;
+//         html.push(row_data);
+//
+//         let patent_list = outcome["patent_list"];
+//         for(let i = 0; i < patent_list.length; i++){
+//             let inner_data = `
+//                             <div class="ends" style="font-size:1vw;-webkit-transform-origin-x: 0;-webkit-transform: scale(0.90);">
+//                                 ${patent_list[i]["patent_name"]}
+//                             </div>
+//             `;
+//             html.push(inner_data);
+//         }
+//         let last_data = `
+//
+//                             </div>
+//                           </div>
+//                         </div>
+//                     </td>
+//                 </tr>
+//         `;
+//         html.push(last_data);
+//     }
+//     innerString = html.join("");
+//     document.getElementById("outcome_put").innerHTML = innerString;
+// }
+
+
 function inner_html(select_school_id_list){
     let html = [];
     console.log(outcome_list);
     for(let i = pageSize * (currentPage - 1); i < pageSize * (currentPage-1) + pageSize && i < total; i++){
         let outcome = cur_outcome_list[i];
         let index = i+1;
-        if(search_type == "teacher"){
-            let school_id_str = outcome["basic_info"]["school_id"].toString();
-            let is_existed = select_school_id_list.indexOf(school_id_str) > -1;
-            if(!is_existed){
-                continue;
-            }
-            let row_data = `
-                        <tr>
-                            <th scope="row">${index}</th>
-                            <td><a href="/school/${outcome["basic_info"]["school"]}">${outcome["basic_info"]["school"]}</a></td>
-                            <td><a href="/institution/${outcome["basic_info"]["school"]}/${outcome["basic_info"]["institution"]}">${outcome["basic_info"]["institution"]}</a></td>
-                            <td><a href="/teacher/${outcome["id"]}">${outcome["basic_info"]["name"]}</div></td>
-                            <td>
-                                <div class="accordion" id="accordionExample">
-                                  
-                                    <div class="card-header" id="headingOne">
-                                      <h2 class="mb-0">
-                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="false" aria-controls="collapse${i}">
-                                          相似成果数量：${outcome["achieve_nums"]}
-                                        </button>
-                                      </h2>
-                                    </div>
-                                    <div id="collapse${i}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                      <div class="card-body">       
-            `;
-            html.push(row_data);
-
-            let patent_list = outcome["patent_list"];
-            for(let i = 0; i < patent_list.length; i++){
-                let inner_data = `
-                                <div class="ends" style="font-size:1vw;-webkit-transform-origin-x: 0;-webkit-transform: scale(0.90);">
-                                    ${patent_list[i]["patent_name"]}
-                                </div>
-                `;
-                html.push(inner_data);
-            }
-            let last_data = `
-                                  
-                                </div>
-                              </div>
+        let school_id_str = outcome["basic_info"]["school_id"].toString();
+        let is_existed = select_school_id_list.indexOf(school_id_str) > -1;
+        if(!is_existed){
+            continue;
+        }
+        let row_data = `
+                    <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <div class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <span>
+                                    <a href="#">${outcome["basic_info"]["school"]}</a> 
+                                    <a href="#">${outcome["basic_info"]["institution"]}</a> 
+                                    <a href="#">${outcome["basic_info"]["name"]}</a>
+                                </span>
+                                
+                                <span class="badge badge-primary" style="text-align: right"> 相似成果数量${outcome["achieve_nums"]}</span>
+<!--                                <div class="text-right">-->
+<!--                                </div>-->
                             </div>
-                        </td>          
-                    </tr>
-            `;
-            html.push(last_data);
+                          </h2>
+                        </div>
+                        <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
+                          <div class="card-body">
+        `;
+        html.push(row_data);
 
+        let patent_list = outcome["patent_list"];
+        for(let i = 0; i < patent_list.length; i++){
+            let inner_data = `
+                            <p>
+                                ${patent_list[i]["patent_name"]}
+                            </p>
+            `;
+            html.push(inner_data);
         }
-        else if(search_type == "institution"){
-            if(!(outcome["basic_info"]["school_id"] in select_school_id_list)){
-                continue;
-            }
-            //TODO： 更新前端的显示样式
-            let row_data = `<button type="button" class="list-group-item list-group-item-action">
-                            <div><a href="/school/${outcome["school_name"]}">${outcome["school_name"]}</a>
-                            <a href="/institution/"${outcome["school_name"]}/${outcome["institution_name"]}>
-                            ${outcome["institution_name"]}</a></div>
-                            <div>相似成果数量 ：${outcome["achieve_nums"]}</div>
-                            <button>                            
-                        `;
-            html.push(row_data);
-        }
+        let last_data = `
+                            </div>
+                        </div>
+                      </div>
+        `;
+        html.push(last_data);
     }
     innerString = html.join("");
     document.getElementById("outcome_put").innerHTML = innerString;
 }
-
 
 /*
 隐藏搜索结果，翻页和学校列表， 显示加载圆圈

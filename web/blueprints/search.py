@@ -1,7 +1,5 @@
 from flask import Blueprint
 from flask import render_template, request
-from web.forms import InputKeyForm
-from web.service.PaperSearchService import PaperSearchService
 from web.service.PatentSearchService import PatentSearchService
 from web.service.InstitutionService import InstitutionService
 from web.service.SchoolService import SchoolService
@@ -28,17 +26,11 @@ def hunt():
     :return:
     """
     input_key = request.form.get("input_key")
-    select_type = "搜索专家"
     if input_key is not None:
         try:
             patent_service = PatentSearchService(input_key)  # 搜索专利服务
-            if select_type == "搜索专家":
-                outcome_patent_list = patent_service.construct_teacher_in_res()
-                return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")
-            else:
-                # outcome_paper_list = paper_service.construct_institution_info()
-                outcome_patent_list = patent_service.construct_institution_info()
-                return render_template("search_outcome.html", outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="institution")
+            outcome_patent_list = patent_service.construct_teacher_in_res()
+            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")
         except Exception:
             return render_template('error.html')
     else:

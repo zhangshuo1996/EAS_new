@@ -13,7 +13,6 @@ class PatentDAO():
 
     def return_teacher_patent(self):
         """
-
         :return:
         """
         return self.teacher_patent
@@ -30,14 +29,6 @@ class PatentDAO():
                 }
             ]
         """
-        print("-------------------------------------get_teacher_patent----------------------------------")
-        # sql = "select teacher_id, patent_id from teacher_patent3 where patent_id in ("
-        # sql = """
-        #     select tp.teacher_id teacher_id, tp.patent_id patent_id, p.title patent_name
-        #     from teacher_patent3 tp left join patent3 p
-        #     on tp.patent_id = p.id
-        #     where patent_id in (
-        # """
         sql = """
             select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name
             from clean_inventor_backup i
@@ -86,14 +77,6 @@ class PatentDAO():
             on i.school_id = s.id
             where i.id in (
         """
-        # sql = "SELECT es_teacher.ID teacher_id, es_school.`NAME` school, es_institution.`NAME` institution," \
-        #       " es_teacher.`NAME` name, es_teacher.TITLE title, " \
-        #       " es_teacher.SCHOOL_ID school_id, es_teacher.INSTITUTION_ID institution_id" \
-        #       " FROM es_teacher, es_school, es_institution " \
-        #       " where es_teacher.SCHOOL_ID = es_school.ID " \
-        #       " and es_teacher.INSTITUTION_ID = es_institution.ID " \
-        #       "and es_teacher.ID in ("
-
         for d in teacher_patent:
             teacher_id = d["teacher_id"]
             sql += str(teacher_id) + ","
