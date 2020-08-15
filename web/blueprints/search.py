@@ -18,6 +18,11 @@ def index():
     return render_template('base.html')
 
 
+@search_bp.route("/test")
+def test():
+    return render_template("test.html")
+
+
 @search_bp.route('/hunt', methods=["GET", "POST"])
 def hunt():
     """
