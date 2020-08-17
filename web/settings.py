@@ -10,6 +10,7 @@ class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY', "secret key")
     # 文件上传路径
     FILE_UPLOAD_PATH = os.path.join(basedir, 'uploads')
+    SCHOOL_AVATAR_PATH = os.path.join(basedir, 'school_avatar')
     MYSQL_CONFIG = MYSQL_CONFIG
 
 

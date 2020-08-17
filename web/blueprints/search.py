@@ -1,5 +1,5 @@
-from flask import Blueprint
-from flask import render_template, request
+from flask import Blueprint, current_app
+from flask import render_template, request, send_from_directory
 from web.service.PatentSearchService import PatentSearchService
 from web.service.InstitutionService import InstitutionService
 from web.service.SchoolService import SchoolService
@@ -101,5 +101,14 @@ def teacher(teacher_id):
     print(teacher_net)
     print(teacher_info)
     return render_template("teacher.html", teacher_net=teacher_net, teacher=teacher_info)
+
+
+@search_bp.route("/avatar/<filename>")
+def avatar(filename):
+    """
+    寻找头像
+    """
+    upload_path = current_app.config["SCHOOL_AVATAR_PATH"]
+    return send_from_directory(upload_path, filename + '.png')
 
 

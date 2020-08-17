@@ -5,6 +5,7 @@
 __pycache__/
 venv/
 env/
+school_avatar/
 
 web/config.py
 web/static/image/backup1.jpg
