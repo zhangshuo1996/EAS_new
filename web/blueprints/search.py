@@ -5,6 +5,7 @@ from web.service.InstitutionService import InstitutionService
 from web.service.SchoolService import SchoolService
 from web.service.RelationshipService import *
 from web.service.TeacherService import *
+from web.service import searchService
 import traceback
 from web.log.Log import Logger
 
@@ -33,6 +34,8 @@ def hunt():
     input_key = request.form.get("input_key")
     if input_key is not None:
         try:
+            # 记录该次搜索的企业需求
+            searchService.save_this_search_text(1, input_key)
             patent_service = PatentSearchService(input_key)  # 搜索专利服务
             outcome_patent_list = patent_service.construct_teacher_in_res()
             return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")

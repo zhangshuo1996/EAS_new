@@ -1,6 +1,6 @@
 import os
 import logging
-from web.config import MYSQL_CONFIG
+from web.config import MYSQL_CONFIG, MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, MYSQL_CURSORCLASS
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -14,12 +14,23 @@ class BaseConfig(object):
     MYSQL_CONFIG = MYSQL_CONFIG
 
 
+# class DevelopmentConfig(BaseConfig):
+#     """开发环境配置"""
+#     MYSQL_CONFIG = MYSQL_CONFIG
+#     MYSQL_CONFIG['maxconnections'] = 1
+#     MYSQL_CONFIG['mincached'] = 1
+#     logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
+#                         level=logging.DEBUG)
+
 class DevelopmentConfig(BaseConfig):
     """开发环境配置"""
-    MYSQL_CONFIG = MYSQL_CONFIG
-    MYSQL_CONFIG['maxconnections'] = 1
-    MYSQL_CONFIG['mincached'] = 1
-    logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
+    MYSQL_HOST = MYSQL_HOST
+    MYSQL_PORT = MYSQL_PORT
+    MYSQL_USER = MYSQL_USER
+    MYSQL_PASSWORD = MYSQL_PASSWORD
+    MYSQL_DB = MYSQL_DB
+    MYSQL_CURSORCLASS = MYSQL_CURSORCLASS
+    logging.basicConfig(format='%(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
                         level=logging.DEBUG)
 
 

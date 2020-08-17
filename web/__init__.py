@@ -4,7 +4,7 @@ from web.blueprints.search import search_bp
 from web.blueprints.main import main_bp
 from web.blueprints.auth import auth_bp
 from web.settings import configuration
-from web.extensions import bootstrap
+from web.extensions import bootstrap, mysql
 from web.extensions import login_manager
 from web.utils import db
 from web.models import UserType, AffairType, affair_id_endpoints
@@ -47,6 +47,7 @@ def register_logger(app):
 def register_extensions(app):
     bootstrap.init_app(app)
     login_manager.init_app(app)
+    mysql.init_app(app)
 
 
 def register_blueprints(app):
