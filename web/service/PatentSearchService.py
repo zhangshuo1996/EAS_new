@@ -61,7 +61,7 @@ class PatentSearchService:
         根据用户的输入内容, 通过调用restful服务获取与之相关的成果id
         :return:
         """
-        data = {"K": 100, "key": input_key}
+        data = {"K": 200, "key": input_key}
         url = "http://39.100.224.138:8777/search"
         data_json = json.dumps(data)
         headers = {'Content-type': 'application/json'}

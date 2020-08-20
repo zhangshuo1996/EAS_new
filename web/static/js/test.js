@@ -56,16 +56,17 @@ function insert_search_outcome() {
                     <div class="card-header">
                         <div class="card-header-title">
                             <span class="school">
-                                <div class="avatar" style="height: 25px; width: 25px">
-                                    <img style="height: 25px; width: 25px" src="/search/avatar/${school}">
-                                </div>${school}
+                                <div class="avatar" style="height: 40px; width: 40px">
+                                    <img style="height: 40px; width: 40px" src="/search/avatar/${school}">
+                                </div>
+                                <span style="margin-left: 1px">${school}</span>
                             </span>
                         `;
         if(institution !== ""){
             row_data += `<span class="institution"><span class="fe fe-home"></span> ${institution}</span>`;
         }
         if(lab !== ""){
-            row_data += `<span class="fe fe-box"></span><span> ${lab}</span>`;
+            row_data += `<span class="fe fe-box" style="margin-left: 1px; margin-right: 1px"></span><span> ${lab}</span>`;
         }
         row_data += `
         </div>
