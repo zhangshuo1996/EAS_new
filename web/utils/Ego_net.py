@@ -28,6 +28,75 @@ class NeoOperator(object):
         except Exception as e:
             print(e)
 
+    @classmethod
+    def get_this_teacher_net(cls, teacher_id):
+        """
+        根据教师的id获取与其团队中的其他教师id
+        :return:
+        """
+        try:
+            cql = "Match p=(:Teacher{id:%s}) return NODES(p) as nodes, RELATIONSHIPS(p) as relationship" % str(teacher_id)
+            back = NeoOperator.graph.run(cql).data()
+            return back
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def get_this_teacher_team_id(cls, teacher_id):
+        """
+        获取该教师所在团队的team_id
+        :param teacher_id:
+        :return:
+        """
+        try:
+            cql = "match (teacher:Teacher) where teacher.id = %s return teacher.team" % str(teacher_id)
+            back = NeoOperator.graph.run(cql).data()
+            return back
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def get_team_member_id(cls, team_id):
+        """
+        根据team_id获取该团队下的所有成员id
+        :param team_id:
+        :return:
+        """
+        try:
+            cql = "match (teacher:Teacher) where teacher.team = %s return teacher.id" % str(team_id)
+            back = NeoOperator.graph.run(cql).data()
+            return back
+        except Exception as e:
+            print(e)
+
+
+def get_team_ids_by_teacher_ids(teacher_id_list):
+    """
+    根据teacher_ids 获取这些teacher对应的团队team_ids
+    :return:[{"teacher.team": team_id, "teacher.id": t_id}]
+    """
+    try:
+        cql = "match (teacher:Teacher) where teacher.id in [{ids_str}] return teacher.team, teacher.id"
+        cql = compose_cql(cql, teacher_id_list)
+        back = NeoOperator.graph.run(cql).data()
+        return back
+    except Exception as e:
+        print(e)
+
+
+def compose_cql(cql, _list):
+    """
+    组合查询cql中有in的语句,
+    :param _list:
+    :param cql:
+    :return:
+    """
+    ids_str = ""
+    for _id in _list:
+        ids_str += str(_id) + ","
+    ids_str = ids_str[0:-1]
+    return cql.format(ids_str=ids_str)
+
 
 def format2Echarts(data):
     """

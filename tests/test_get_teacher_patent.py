@@ -21,3 +21,16 @@ class TestGetTeacherPatent(unittest.TestCase):
         :return:
         """
         patentDao = PatentDAO([472887, 472918, 473205, 473250, 473286])
+
+
+    def test_delete_list(self):
+        """
+        测试 边循环 边删除列表
+        :return:
+        """
+        a = [1, 4, 3, 2, 6, 8, 11, 10]
+        for l in a[::-1]:
+            print("--", l)
+            if l % 2 == 0:
+                a.remove(l)
+        print(a)

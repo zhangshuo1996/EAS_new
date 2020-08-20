@@ -10,6 +10,31 @@
         .table th, .table td {
             vertical-align: middle!important;
         }
+        ul{
+            list-style-type: none;
+        }
+
+        table td {
+            height: 25px;
+            line-height: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        table td:hover { /* 鼠标滑过  显示隐藏的内容  伴有横向的滚动条 */
+            overflow: auto;
+            text-overflow: clip;
+        }
+        .mytable tr td {
+            /* for IE */
+            text-overflow: ellipsis;
+            /* for Firefox,mozilla */
+            -moz-text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: left
+        }
     </style>
 {% endblock %}
 
@@ -20,13 +45,14 @@
         <div class="col-md-12 ">
             <form method="post"  action="{{ url_for("search.hunt") }}">
                 <div class="input-group input-group-newsletterp">
-                    <div class="col-md-5"></div>
-                    <div class="col-md-6">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-7">
                         <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
                     </div>
                     <div class="col-md-1">
                         <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">
                     </div>
+                    <div class="col-md-2"></div>
                 </div>
             </form>
         </div>
@@ -38,116 +64,64 @@
         </ul>
     </div>
     <br>
-    <br>
+
+
     <div class="row">
-        <div class="col-sm-5"></div>
-        <div class="col-sm-2">
-            <div class="d-none" id="load_cycle">
-                <div class="spinner-border" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-                正在检索，请稍后
+        <div class="col-md-2"></div>
+        <div class="col-md-7">
+            <div class="container" id="search_outcome">
+
             </div>
-
         </div>
-        <div class="col-sm-5"></div>
-    </div>
-
-    <div class="row" id="outcome_list">
-        <div class="col-md-3"></div>
-        <div class="col-md-6 list-group">
-{#            <table class="table table-no-bordered">#}
-{#                <thead>#}
-{#                <tr>#}
-{#                    <th scope="col">序号</th>#}
-{#                    <th scope="col">学校</th>#}
-{#                    <th scope="col">学院</th>#}
-{#                    <th scope="col">专家</th>#}
-{#                    <th scope="col">相似成果</th>#}
-{#                </tr>#}
-{#                </thead>#}
-{#                <tbody id="outcome_put">#}
-{##}
-{#                </tbody>#}
-{#            </table>#}
-            <div class="accordion" id="outcome_put">
+        <div class="col-md-4">
+            <div class="container" style="width: 400px; height: 400px; position: fixed; top: 80px; right: 60px;">
+                <div class="card" >
+                    <div class="card-header">高校占比</div>
+                    <div class="card-body" style="height: 340px" id="school-pie">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="container" style="width: 420px; height: 700px; position: fixed; top: 550px; right: 40px;">
                 <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h2 class="mb-0">
-                            <div class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                <span>
-                                浙江大学 建筑学院
-                                </span>
-                                <br>胡一波
+                    <div class="card-header">历史搜索记录</div>
+                    <div class="card-body" style="height: 300px">
+                    <table class="mytable" style="width: 100%; border:0; table-layout: fixed;">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
 
-                            </div>
-                        </h2>
-                    </div>
-                    <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#outcome_put">
-                        <div class="card-body">
-                            <p>一种用于医疗影像的深度学习处理方法</p>
-                            <p>一种用于医疗影像的深度学习处理方法</p>
-                            <p>一种用于医疗影像的深度学习处理方法</p>
-                            <p>一种用于医疗影像的深度学习处理方法</p>
-                            <p>一种用于医疗影像的深度学习处理方法</p>
-                        </div>
+                        {% for history in search_history %}
+                        <tr>
+                            <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="{{ history["search_text"] }}">{{ history["search_text"] }}</td>
+                            <td>{{ history["gmt_create"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
                     </div>
                 </div>
             </div>
         </div>
-        {# 显示高校， 用于勾选 #}
-        <div class="col-md-3">
-            <div id="show_school" style="padding-left: 30px"></div>
-        </div>
     </div>
 
-    <footer class="navbar-fixed-bottom" id="change_page">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3"></div>
-                <div class="col-md-3">
-                    <div class="layui-box layui-laypage layui-laypage-molv" id="layui-laypage-1" style="margin-top: 10px;font-size: 14px">
-                        <a href="javascript:" class="layui-laypage-first" data-page="0">首页</a>
-                        <a href="javascript:" class="layui-laypage-pre" data-page="2">上一页</a>
-                        <a href="javascript:" class="layui-laypage-next" data-page="2">下一页</a>
-                        <a href="javascript:" class="layui-laypage-last" data-page="2">末页</a>
-                        <a href="#" id="layui-laypage-count" ></a>
-    <!--                    <span id="layui-laypage-count"></span>-->
-                    </div>
-                </div>
-                <div class="col-md-3"></div>
-            </div>
-        </div>
-    </footer>
-    <div id="page_ctrl" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-    </div>
-
-    <div class="row">
-        <div class="col-sm-5"></div>
-        <div class="col-sm-2">
-            <div class="d-none">
-                <div class="spinner-border" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-                正在检索，请稍后
-            </div>
-        </div>
-        <div class="col-sm-5"></div>
-    </div>
 {% endblock %}
 
 {% block script %}
     <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
-    <script type="text/javascript">
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='js/create_graph.js') }}"></script>
+    <script>
         var transport = {
-            "outcome_paper_list": {{ outcome_paper_list|tojson }},
-            "outcome_patent_list": {{ outcome_patent_list|tojson }},
+            "data": {{ data|tojson }},
             "type": {{ type|tojson }},
             "input_key": {{ input_key|tojson }},
         };
     </script>
-    <script src="{{ url_for('static', filename='js/search_outcome.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/test.js') }}"></script>
 {% endblock %}

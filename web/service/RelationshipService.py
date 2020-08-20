@@ -35,15 +35,36 @@ def format2Echarts(data):
 
     return result
 
-def get_teacher_net(teacher_id):
+
+def get_teacher_team(teacher_id):
     """
-    获取教师的个人网络关系
+    获取教师的所在团队的教师id
     :return:
     """
-    data = NeoOperator.get_ego_net(teacher_id)
-    # print(pprint.pformat(data))
-    res = format2Echarts(data)
-    return res
+    data = NeoOperator.get_this_teacher_team_id(teacher_id)
+    if len(data) == 0 or data[0]["teacher.team"] is None:  # 该教师没有team_id，无团队
+        return {0}
+    team_id = data[0]["teacher.team"]
+    teacher_ids = NeoOperator.get_team_member_id(team_id)
+    team = convert_team_to_set(teacher_ids)
+    return team
+
+
+def convert_team_to_set(teacher_ids):
+    """
+    将团队中的列表形式转化为集合形式{t1, t2, t3}
+    :param teacher_ids:
+    :return:
+    """
+    team = {0}
+    for dic in teacher_ids:
+        teacher_id = dic["teacher.id"]
+        team.add(teacher_id)
+    return team
+
+
+
 
 if __name__ == '__main__':
-    get_teacher_net(152837)
+    # get_teacher_net(125009)
+    get_teacher_team(9961)

@@ -3,11 +3,11 @@ from flask import render_template, request, send_from_directory
 from web.service.PatentSearchService import PatentSearchService
 from web.service.InstitutionService import InstitutionService
 from web.service.SchoolService import SchoolService
-from web.service.RelationshipService import *
 from web.service.TeacherService import *
 from web.service import searchService
 import traceback
 from web.log.Log import Logger
+import time
 
 log = Logger('log/logs/log_search', level='debug')
 
@@ -21,7 +21,7 @@ def index():
 
 @search_bp.route("/test")
 def test():
-    return render_template("test.html")
+    return render_template("search_outcome.html")
 
 
 @search_bp.route('/hunt', methods=["GET", "POST"])
@@ -34,11 +34,16 @@ def hunt():
     input_key = request.form.get("input_key")
     if input_key is not None:
         try:
+            start = time.time()
             # 记录该次搜索的企业需求
             searchService.save_this_search_text(1, input_key)
             patent_service = PatentSearchService(input_key)  # 搜索专利服务
-            outcome_patent_list = patent_service.construct_teacher_in_res()
-            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_patent_list=outcome_patent_list, type="teacher")
+            outcome_patent_dict = patent_service.construct_teacher_in_res() # 获取相似成果对应的团队
+            search_history = patent_service.get_search_history()
+            end = time.time()
+            spend_time = end - start
+            print("搜索时间", spend_time, "秒")
+            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], data=outcome_patent_dict, type="teacher", search_history=search_history)
         except Exception:
             return render_template('error.html')
     else:

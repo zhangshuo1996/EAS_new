@@ -13,5 +13,9 @@ def save_this_search_text(searcher_id, search_text):
     :param search_text:
     :return:
     """
-    result = searchDao.save_this_search_text(searcher_id, search_text)
+    nums = searchDao.get_history_by_text(search_text)["cnt"]
+    if nums == 0:
+        result = searchDao.save_this_search_text(searcher_id, search_text)
+    else:
+        result = searchDao.update_history_time(search_text)
     return result
