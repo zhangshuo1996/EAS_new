@@ -77,7 +77,6 @@ function insert_search_outcome() {
                 break;
             }
             let teacher_info = teacher_basic_info[member_id_list[j]];
-            debugger;
             let teacher_name = teacher_info["name"];
             row_data += `<span class="expert" style="margin: 1px; padding: 1px">${teacher_name}</span></span>`
         }

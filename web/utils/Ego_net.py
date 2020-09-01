@@ -84,6 +84,24 @@ def get_team_ids_by_teacher_ids(teacher_id_list):
         print(e)
 
 
+def get_cooperate_rel_teacher_ids(teacher_id_list):
+    """
+    根据teacher_ids 获取这些teacher的合著关系
+    :return:
+    """
+    try:
+        cql = """
+            Match p=(t:Teacher)-[r:cooperate]-(:Teacher) 
+            where t.id in [{ids_str}]
+            return NODES(p) as nodes, RELATIONSHIPS(p) as relationship
+        """
+        cql = compose_cql(cql, teacher_id_list)
+        back = NeoOperator.graph.run(cql).data()
+        return back
+    except Exception as e:
+        print(e)
+
+
 def compose_cql(cql, _list):
     """
     组合查询cql中有in的语句,
@@ -136,4 +154,3 @@ if __name__ == '__main__':
     data = NeoOperator.get_ego_net(86791)
     print(pprint.pformat(data))
     res = format2Echarts(data)
-    # print(res)

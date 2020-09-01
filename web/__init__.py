@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, current_app, url_for
 from web.blueprints.search import search_bp
+from web.blueprints.profile import profile_bp
 from web.blueprints.main import main_bp
 from web.blueprints.auth import auth_bp
 from web.settings import configuration
@@ -54,6 +55,7 @@ def register_blueprints(app):
     # app.register_blueprint(auth_bp, url_prefix='/')
     app.register_blueprint(main_bp, url_prefix='/')
     app.register_blueprint(search_bp, url_prefix='/search')
+    app.register_blueprint(profile_bp, url_prefix='/profile')
 
 
 def register_errors(app):

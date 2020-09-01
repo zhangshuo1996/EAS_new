@@ -11,6 +11,8 @@ class BaseConfig(object):
     # 文件上传路径
     FILE_UPLOAD_PATH = os.path.join(basedir, 'uploads')
     SCHOOL_AVATAR_PATH = os.path.join(basedir, 'school_avatar')
+    SCHOOL_PICTURE_PATH = os.path.join(basedir, 'school_picture')
+    SCHOOL_HEADER_PATH = os.path.join(basedir, 'school_header')
     MYSQL_CONFIG = MYSQL_CONFIG
 
 
