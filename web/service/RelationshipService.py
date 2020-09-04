@@ -1,4 +1,4 @@
-from web.utils.Ego_net import *
+from web.utils import Ego_net as ego_net
 
 
 def format2Echarts(_data):
@@ -86,11 +86,11 @@ def get_teacher_team(teacher_id):
     获取教师的所在团队的教师id
     :return:
     """
-    _data = NeoOperator.get_this_teacher_team_id(teacher_id)
+    _data = ego_net.NeoOperator.get_this_teacher_team_id(teacher_id)
     if len(_data) == 0 or _data[0]["teacher.team"] is None:  # 该教师没有team_id，无团队
         return {0}
     team_id = _data[0]["teacher.team"]
-    teacher_ids = NeoOperator.get_team_member_id(team_id)
+    teacher_ids = ego_net.NeoOperator.get_team_member_id(team_id)
     team = convert_team_to_set(teacher_ids)
     return team
 
@@ -114,9 +114,55 @@ def get_cooperate_rel(teacher_id_list):
     :param teacher_id_list:
     :return:
     """
-    _data = get_cooperate_rel_teacher_ids(teacher_id_list)
+    _data = ego_net.get_cooperate_rel_teacher_ids(teacher_id_list)
     result = format2echarts(_data)
     return result
+
+
+def get_cooperate_rel_by_team_id_list(team_id_list, institution):
+    """
+    根据学院中的team_id_list 获取 学院内部的社区关系
+    :param institution:
+    :param team_id_list:
+    :return:
+    """
+    _data = ego_net.get_cooperate_rel_by_team_id_list(team_id_list, institution, 0)
+    result = format2echarts(_data)
+    if len(result["nodes"]) > 70:
+        _data = ego_net.get_cooperate_rel_by_team_id_list(team_id_list, institution, 3)
+        result = format2echarts(_data)
+    if len(result["nodes"]) > 70:
+        _data = ego_net.get_cooperate_rel_by_team_id_list(team_id_list, institution, 5)
+        result = format2echarts(_data)
+    if len(result["nodes"]) > 70:
+        _data = ego_net.get_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
+        result = format2echarts(_data)
+    return result
+
+
+def get_team_ids_by_teacher_ids(teacher_id_list):
+    """
+    根据教师的id列表获取这些教师对应的team_id
+    :param teacher_id_list:
+    :return:
+    """
+    team_ids = ego_net.get_team_ids_by_teacher_ids(teacher_id_list)
+    # team_id_list = [dic["teacher.team"] for dic in team_ids]
+    return team_ids
+
+
+def get_team_id_list_by_teacher_ids(teacher_id_list):
+    """
+    根据教师的id列表获取这些教师对应的team_id
+    :param teacher_id_list:
+    :return:[team_id1, team_id2, ...]
+    """
+    team_ids = ego_net.get_team_ids_by_teacher_ids(teacher_id_list)
+    team_id_list = []
+    for dic in team_ids:
+        if dic["teacher.team"] is not None:
+            team_id_list.append(dic["teacher.team"])
+    return team_id_list
 
 
 if __name__ == '__main__':

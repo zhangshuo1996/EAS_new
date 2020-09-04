@@ -96,10 +96,51 @@ def get_cooperate_rel_teacher_ids(teacher_id_list):
             return NODES(p) as nodes, RELATIONSHIPS(p) as relationship
         """
         cql = compose_cql(cql, teacher_id_list)
+        print(cql)
         back = NeoOperator.graph.run(cql).data()
         return back
     except Exception as e:
         print(e)
+
+
+def get_cooperate_rel_by_team_id_list(team_id_list, institution, patent_num):
+    """
+    根据学院中的team_id_list 获取 学院内部的社区关系
+    :param patent_num:
+    :param institution:
+    :param team_id_list:
+    :return:
+    """
+    try:
+        cql = """
+                   match p=(t1:Teacher)-[r:cooperate]-(t2:Teacher) 
+                    where t1.team in [{ids_str}] and t2.team in [{ids_str}] 
+                    and t1.patent > 0 and t1.institution = "{institution}" and t2.institution = "{institution}" 
+                    and t1.patent > {patent_num} and t2.patent > {patent_num}
+                    return NODES(p) as nodes, RELATIONSHIPS(p) as relationship
+                """
+        cql = compose_cql2(cql, team_id_list, institution, patent_num)
+        print(cql)
+        back = NeoOperator.graph.run(cql).data()
+        return back
+    except Exception as e:
+        print(e)
+
+
+def compose_cql2(cql, _list, institution, patent_num):
+    """
+    组合查询cql中有in的语句,
+    :param patent_num:
+    :param institution:
+    :param _list:
+    :param cql:
+    :return:
+    """
+    ids_str = ""
+    for _id in _list:
+        ids_str += str(_id) + ","
+    ids_str = ids_str[0:-1]
+    return cql.format(ids_str=ids_str, institution=institution, patent_num=patent_num)
 
 
 def compose_cql(cql, _list):

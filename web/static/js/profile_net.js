@@ -106,7 +106,11 @@ function convert_graph_data(data) {
     let team_map = {};
     let index = 0;
     for(let team_id of team_set){
-        team_map[index] = get_team_principle(team_id, temp_nodes);
+        let team_leader = get_team_principle(team_id, temp_nodes);
+        if(team_leader == undefined){
+            continue;
+        }
+        team_map[index] = team_leader;
         team_id_dict[team_id] = index++;
     }
     for(let i = 0; i < nodes.length; i++){
@@ -115,7 +119,7 @@ function convert_graph_data(data) {
         nodes[i]["category"] = team_id_dict[team_id];
     }
     return {
-        community: team_set.size,
+        community: index,
         core_node: team_map,
         links: links,
         nodes: nodes,
@@ -135,7 +139,7 @@ function get_team_principle(team_id, nodes) {
             return nodes[i]["name"];
         }
     }
-    return "张志政";
+    return undefined;
 }
 
 
@@ -215,7 +219,7 @@ set_radar_option(
                 {text: '实验平台', max: 100},
                 {text: '成果数量', max: 100},
             ],
-    [80, 44, 32, 84, 95]
+    [10, 10, 10, 10, 10]
 );
 
 /**
@@ -223,7 +227,8 @@ set_radar_option(
  * @param dimension
  * @param data
  */
-function set_radar_option(dimension, data) {
+function set_radar_option(dimension, data, teacher_name="点击右图节点查看科研水平评估") {
+    $("#radar_graph_header").html(teacher_name + "团队科研水平评估");
     let option = {
         title: {
             // text: '多雷达图'
@@ -239,7 +244,7 @@ function set_radar_option(dimension, data) {
             {},
             {
                 indicator: dimension,
-                radius: 80,
+                radius: 100,
                 center: ['50%', '60%'],
             }
         ],
@@ -274,7 +279,8 @@ function reloadGraph(data){
     graphOption.series[0].links = links;
     let categories = [];
     categories[0] = {name: ''};
-    for (let i = 1; i <= data.community; i++) {
+    for (let i = 0; i < data.community; i++) {
+        debugger
         categories[i] = {
             name: data.core_node[String(i)]+"团队"
         };
@@ -330,7 +336,8 @@ function get_team_dimension_info(team_id) {
                 json_data["school_level_score"],
                 json_data["lab_score"],
                 json_data["achieve_num"],
-            ]
+            ],
+                json_data["teacher_name"]
         );
         }
     })

@@ -13,16 +13,17 @@ log = Logger('log/logs/log_search', level='debug')
 profile_bp = Blueprint("profile", __name__)
 
 
-@profile_bp.route("/")
-def index():
+@profile_bp.route("/<school>")
+def index(school):
     """
     画像展示界面
     :return:
     """
-    school = "河海大学"
+    # school = "北京大学"
     labs = profile_service.get_school_lab(school=school)
     disciplines = profile_service.get_school_discipline(school)
-    return render_template("profile.html", school=school, labs=labs, disciplines=disciplines)
+    introduction = profile_service.get_school_introduction(school)
+    return render_template("profile.html", school=school, labs=labs, disciplines=disciplines, introduction=introduction)
 
 
 @profile_bp.route("/picture/<school>")
@@ -36,14 +37,23 @@ def picture(school):
     return send_from_directory(picture_path, pictures[6])
 
 
-@profile_bp.route("/school_header/<school>")
-def school_header(school):
+@profile_bp.route("/school_header_logo/<school>")
+def school_header_logo(school):
     """
     展示学校画像中最上方的图片
     """
-    school = "东南大学"
+    path = current_app.config["SCHOOL_HEADER_PATH"]
+    avatar_path = current_app.config["SCHOOL_AVATAR_PATH"]
+    return profile_service.get_school_header_logo(school, path, avatar_path)
+
+
+@profile_bp.route("/school_header_background/<school>")
+def school_header_background(school):
+    """
+    展示学校画像中最上方的图片
+    """
     school_path = current_app.config["SCHOOL_HEADER_PATH"]
-    return send_from_directory(school_path, school + ".png")
+    return profile_service.get_school_header_background(school, path=school_path)
 
 
 @profile_bp.route("/get_institution_patent_num")
@@ -66,7 +76,9 @@ def getInstitutionRelation():
     school = request.args.get("school")
     institution = request.args.get("institution")
     teacher_ids = profile_service.get_institution_teacher_ids(school, institution)
-    result = relationService.get_cooperate_rel(teacher_ids)
+    team_id_list = relationService.get_team_id_list_by_teacher_ids(teacher_ids)
+    result = relationService.get_cooperate_rel_by_team_id_list(team_id_list, institution)
+    # result = relationService.get_cooperate_rel(teacher_ids)
     return result
 
 
@@ -76,8 +88,10 @@ def get_team_dimension_info():
     获取团队的各维度信息
     :return:
     """
-    team_id = request.args.get("team_id")
+    team_id = request.args.get("team_id")  # team_id与教师id是对应的
     school = request.args.get("school")
+    teacher_name = profile_service.get_teacher_name_by_id(team_id)
     result = profile_service.get_team_dimension_info(team_id, school)
+    result["teacher_name"] = teacher_name
 
     return result

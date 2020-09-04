@@ -1,6 +1,38 @@
 from web.dao import profile as profile_dao
 from web.service import RelationshipService as relationService
+from flask import send_from_directory
 import math
+import os
+
+
+def get_school_header_logo(school, path, avatar_path):
+    """
+    展示学校画像中最上方的图片中的学校图标
+    """
+    file_names = os.listdir(path)
+    pic_file_name = ""
+    for file_name in file_names:
+        if school in file_name and "logo" in file_name:
+            pic_file_name = file_name
+            break
+    if pic_file_name == "":
+        pic_file_name = school + ".png"
+        return send_from_directory(avatar_path, pic_file_name)
+    else:
+        return send_from_directory(path, pic_file_name)
+
+
+def get_school_header_background(school, path):
+    """
+    展示学校画像中最上方图片中的背景
+    """
+    file_names = os.listdir(path)
+    pic_file_name = "default_pic.png"
+    for file_name in file_names:
+        if school in file_name and "logo" not in file_name:
+            pic_file_name = file_name
+            break
+    return send_from_directory(path, pic_file_name)
 
 
 def get_school_discipline(school):
@@ -12,6 +44,15 @@ def get_school_discipline(school):
     _data = profile_dao.get_school_discipline(school)
     return _data
 
+
+def get_school_introduction(school):
+    """
+    获取学校的简介
+    :param school:
+    :return:
+    """
+    result = profile_dao.get_school_introduction(school)
+    return result["introduction"]
 
 def get_school_lab(school):
     """
@@ -72,6 +113,16 @@ def get_institution_teacher_ids(school, institution):
     _data = profile_dao.get_institution_teacher_id(school, institution)
     teacher_ids = [dic["teacher_id"] for dic in _data]
     return teacher_ids
+
+
+def get_teacher_name_by_id(team_id):
+    """
+
+    :param team_id:
+    :return:
+    """
+    result = profile_dao.get_teacher_name_by_id(team_id)
+    return result["name"]
 
 
 def get_team_dimension_info(team_id, school):

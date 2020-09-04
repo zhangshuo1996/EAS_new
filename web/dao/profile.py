@@ -17,6 +17,20 @@ def get_school_discipline(school):
     return mysql.select(sql, school)
 
 
+def get_school_introduction(school):
+    """
+    获取学校的简介
+    :param school:
+    :return:
+    """
+    sql = """
+        select introduction
+        from school
+        where name = ?
+    """
+    return mysql.select_one(sql, school)
+
+
 def get_school_lab(school):
     """
     获取学院的实验平台
@@ -78,6 +92,20 @@ def get_institution_teacher_id(school, institution):
         GROUP BY i.id
     """
     return mysql.select(sql, school, institution)
+
+
+def get_teacher_name_by_id(team_id):
+    """
+
+    :param team_id:
+    :return:
+    """
+    sql = """
+        select name
+        from clean_inventor_backup i
+        where id = ?
+    """
+    return mysql.select_one(sql, team_id)
 
 
 def get_institution_teacher_ids(school, institution):

@@ -52,9 +52,9 @@
 
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-10" style="padding-left: 120px; padding-top: 10px">
-            <div style="">
-                <img src="{{ url_for("profile.school_header", school="东南大学") }}" class="d-block w-100" alt="..." style="padding-right: 20px">
+        <div class="col-md-10" style="padding-left: 120px; padding-top: 10px; height: 120px">
+            <div style="height:120px; background-image: url({{ url_for("profile.school_header_background", school=school) }}); background-repeat: no-repeat; background-size: cover">
+                <img src="{{ url_for("profile.school_header_logo", school=school) }}" height="80" width="300" class="" alt="..." style="padding-top: 10px; padding-bottom: 5px;">
             </div>
         </div>
         <div class="col-md-1">
@@ -66,7 +66,9 @@
         <div class="col-md-4" style="padding-left: 120px; padding-top: 20px">
             <div class="card">
                 <div class="card-header" >学校简介：</div>
-                <div class="card-body" style="height:160px; overflow-y:auto; padding: 20px;">东南大学（Southeast University），简称“东大”，是中华人民共和国教育部直属的全国重点大学，是国家首批世界一流大学建设高校（A类）、“985工程”和“211工程”重点建设高校，入选“2011计划”、“111计划”、卓越工程师教育培养计划、卓越医生教育培养计划、国家大学生创新性实验计划、国家级大学生创新创业训练计划、国家建设高水平大学公派研究生项目、全国深化创新创业教育改革示范高校、学位授权自主审核单位，由教育部与江苏省共建。</div>
+                <div class="card-body" style="height:160px; overflow-y:auto; padding: 20px;">
+                    {{ introduction}}
+                </div>
             </div>
             <div class="card">
                     <div class="card-header">重点学科：</div>
@@ -117,6 +119,23 @@
         <div class="col-md-1"></div>
     </div>
 
+{#    <div class="row">#}
+{#    <div class="col-md-6"></div>#}
+{#    <div class="col-md-1">#}
+{#        <span class="fe fe-chevron-down" style="font-size: 3rem" id="next_page"></span>#}
+{#    </div>#}
+{#    <div class="col-md-5"></div>#}
+{#    </div>#}
+{##}
+{#    <div class="row">#}
+{#        <div class="col-md-6"></div>#}
+{#        <div class="col-md-1">#}
+{#            <span class="fe fe-chevron-up" style="font-size: 3rem" id="up_page"></span>#}
+{#        </div>#}
+{#        <div class="col-md-5"></div>#}
+{##}
+{#    </div>#}
+
     <div class="row">
         <div class="col-md-1">
         </div>
@@ -130,7 +149,7 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-header">雷达图</div>
+                <div class="card-header" id="radar_graph_header">点击右图节点查看科研水平评估</div>
                 <div class="header-body">
                     <div id="radar_graph" style="height: 200px"></div>
                 </div>
@@ -154,7 +173,8 @@
     <script src="{{ url_for('static', filename='js/dist/jquery-3.5.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dist/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dist/bootstrap_v4.min.js') }}"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+    <script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
+{#    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>#}
     <script src="{{ url_for('static', filename='js/create_graph.js') }}"></script>
 
     <script>

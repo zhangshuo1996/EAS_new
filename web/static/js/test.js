@@ -59,7 +59,9 @@ function insert_search_outcome() {
                                 <div class="avatar" style="height: 40px; width: 40px">
                                     <img style="height: 40px; width: 40px" src="/search/avatar/${school}">
                                 </div>
-                                <span style="margin-left: 1px">${school}</span>
+                                <span style="margin-left: 1px">
+                                    <a href="/profile/${school}">${school}</a>
+                                </span>
                             </span>
                         `;
         if(institution !== ""){

@@ -1,5 +1,38 @@
 let institution_patent_chart = getEChartsObject("institution-patent-pie");
 
+/**TODO
+ * 学校简介/重点学科/实验平台部分的伸缩
+ */
+
+
+/**
+ * 下一页与上一页
+ */
+// $("#next_page").on("click", function () {
+//     debugger
+//     document.getElementsByTagName('BODY')[0].scrollTop=document.getElementsByTagName('BODY')[0].scrollHeight;
+// });
+//
+// $("#up_page").on("click", function () {
+//     debugger
+//     document.getElementsByTagName('BODY')[0].scrollTop=0;
+// });
+
+
+// $(document).on('mousewheel DOMMouseScroll', onMouseScroll);
+// function onMouseScroll(e){
+//     e.preventDefault();
+//     var wheel = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+//     var delta = Math.max(-1, Math.min(1, wheel) );
+//     if(delta < 0){//向下滚动
+//         window.scrollTo(0,document.body.scrollHeight);
+//         console.log('向下滚动');
+//     }else{//向上滚动
+//         window.scrollTo(0,0);
+//         console.log('向上滚动');
+//     }
+// }
+
 
 get_institution_patent_num(school);
 /*
@@ -36,12 +69,19 @@ function configure_angle_picture(institutions, data) {
             data: ['成果数量']
         },
         grid: {
-            top: 100
+            top: 80
         },
         angleAxis: {
             type: 'category',
-            data: institutions
+            data: institutions,
+            axisTick: { //坐标轴刻度设置
+        　　　　show: false
+        　　},
+        　　splitLine: { //分割线设置
+        　　　　show: false,
+        　　},
         },
+        radius: 20,
         tooltip: {
             show: true,
             formatter: function (params) {
