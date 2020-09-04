@@ -34,7 +34,7 @@ def picture(school):
     school_path = current_app.config["SCHOOL_PICTURE_PATH"]
     picture_path = os.path.join(school_path, school)
     pictures = os.listdir(picture_path)
-    return send_from_directory(picture_path, pictures[6])
+    return send_from_directory(picture_path, pictures[1])
 
 
 @profile_bp.route("/school_header_logo/<school>")

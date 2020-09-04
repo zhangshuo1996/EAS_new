@@ -1,5 +1,6 @@
 let institution_relationship_chart = echarts.init(document.getElementById('institution_graph'));
 let INSTITUTION_NAME = "";
+let radar_chart = getEChartsObject("radar_graph");
 let team_id_dict = {}; // 序号： team_id
 let data2 = {
     community: 6,
@@ -78,10 +79,21 @@ function convert_graph_data(data) {
     let links = [];
     let nodes = [];
     let team_set = new Set();
+    let have_push_links_set = new Set();
     for(let i = 0; i < temp_links.length; i++){
+        let source = String(temp_links[i]["source"]);
+        let target = String(temp_links[i]["target"]);
+        let s1 = source + "--" + target;
+        let s2 = target + "--" + source;
+        if(have_push_links_set.has(s1) || have_push_links_set.has(s2)){
+            continue;
+        }else{
+            have_push_links_set.add(s1);
+            have_push_links_set.add(s2);
+        }
         links.push({
-            source: String(temp_links[i]["source"]),
-            target: String(temp_links[i]["target"]),
+            source: source,
+            target: target,
             paper:0,
             patent:0,
             project:0,
@@ -262,7 +274,6 @@ function set_radar_option(dimension, data, teacher_name="点击右图节点查�
             }
         ]
     };
-    let radar_chart = getEChartsObject("radar_graph");
     radar_chart.clear();
     radar_chart.hideLoading();
     radar_chart.setOption(option);
