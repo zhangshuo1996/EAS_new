@@ -28,6 +28,10 @@ barOption = {
         data: [],
         axisTick: {
             alignWithLabel: true
+        },
+        axisLabel: {
+           interval:0,
+           rotate:20
         }
     },
     yAxis: {
@@ -438,4 +442,52 @@ function getEChartsObject(id) {
         return echarts.init(elem);
     }
     return undefined;
+}
+
+
+/**
+ * 设置并加载雷达图
+ * @param dimension
+ * @param data
+ * @param chart
+ * @param teacher_name
+ */
+function set_radar_option(dimension, data, chart, teacher_name="点击右图节点查看科研水平评估") {
+    $("#radar_graph_header").html(teacher_name + "团队科研水平评估");
+    let option = {
+        title: {
+            // text: '多雷达图'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            left: 'center',
+            data: ['分布']
+        },
+        radar: [
+            {},
+            {
+                indicator: dimension,
+                radius: 100,
+                center: ['50%', '60%'],
+            }
+        ],
+        series: [
+            {
+                type: 'radar',
+                radarIndex: 1,
+                areaStyle: {},
+                data: [
+                    {
+                        value: data,
+                        name: '某主食手机'
+                    }
+                ]
+            }
+        ]
+    };
+    chart.clear();
+    chart.hideLoading();
+    chart.setOption(option);
 }

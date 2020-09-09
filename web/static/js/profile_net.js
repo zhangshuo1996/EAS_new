@@ -1,6 +1,5 @@
-let institution_relationship_chart = echarts.init(document.getElementById('institution_graph'));
+let team_relationship_chart = echarts.init(document.getElementById('team-relation-chart'));
 let INSTITUTION_NAME = "";
-let radar_chart = getEChartsObject("radar_graph");
 let team_id_dict = {}; // 序号： team_id
 let data2 = {
     community: 6,
@@ -56,7 +55,7 @@ let data2 = {
 by zhang
  */
 function getInstitutionRelation(school, institution){
-    institution_relationship_chart.showLoading();
+    team_relationship_chart.showLoading();
     $("#institution_name").html(institution + "专家团队");
     $.ajax({
         type: "get",
@@ -66,6 +65,26 @@ function getInstitutionRelation(school, institution){
         success: function (json_data) {
             let graph_data = convert_graph_data(json_data);
             reloadGraph(graph_data);
+        }
+    })
+}
+
+
+/*
+获取该团队的内部关系数据，并重新加载关系图
+by zhang
+ */
+function getTeamRelation(team_id, institution){
+    team_relationship_chart.showLoading();
+    $.ajax({
+        type: "get",
+        url: "/search/getInstitutionRelation",
+        data: {"team_id": team_id, "institution": institution},
+        dataType: "json",
+        success: function (json_data) {
+            let graph_data = convert_graph_data(json_data);
+            reloadGraph(graph_data);
+            // $("#leader_name").html(leader + "团队");
         }
     })
 }
@@ -221,54 +240,6 @@ let graphOption = {
 };
 
 
-
-/**
- * 设置并加载雷达图
- * @param dimension
- * @param data
- * @param chart
- * @param teacher_name
- */
-function set_radar_option(dimension, data, chart, teacher_name="点击右图节点查看科研水平评估") {
-    $("#radar_graph_header").html(teacher_name + "团队科研水平评估");
-    let option = {
-        title: {
-            // text: '多雷达图'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        legend: {
-            left: 'center',
-            data: ['分布']
-        },
-        radar: [
-            {},
-            {
-                indicator: dimension,
-                radius: 100,
-                center: ['50%', '60%'],
-            }
-        ],
-        series: [
-            {
-                type: 'radar',
-                radarIndex: 1,
-                areaStyle: {},
-                data: [
-                    {
-                        value: data,
-                        name: '某主食手机'
-                    }
-                ]
-            }
-        ]
-    };
-    chart.clear();
-    chart.hideLoading();
-    chart.setOption(option);
-}
-
 /**
  * 重新加载关系图数据，把数据赋值给graphOption中的data
  * @param data 关系图数据
@@ -292,54 +263,22 @@ function reloadGraph(data){
             return a.name;
         })
     }];
-    institution_relationship_chart.setOption(graphOption);
-    institution_relationship_chart.hideLoading();
+    team_relationship_chart.setOption(graphOption);
+    team_relationship_chart.hideLoading();
 }
 
-/**
- * 关系图上的点 点击事件
- */
-institution_relationship_chart.on('click', function (params) {
-    //仅限节点类型
-    if (params.dataType === 'node' && params.data.name !== "0"){
-        //页面
-        debugger;
-        let team_id = params.data.team_id;
-        // 获取这个team_id的各维度数据，构建雷达图
-        get_team_dimension_info(team_id);
-    }
-});
+// /**
+//  * 关系图上的点 点击事件
+//  */
+// institution_relationship_chart.on('click', function (params) {
+//     //仅限节点类型
+//     if (params.dataType === 'node' && params.data.name !== "0"){
+//         //页面
+//         debugger;
+//         let team_id = params.data.team_id;
+//         // 获取这个team_id的各维度数据，构建雷达图
+//         // get_team_dimension_info(team_id);
+//     }
+// });
 
-/**
- * 获取团队的各维度信息，用于更新雷达图
- */
-function get_team_dimension_info(team_id) {
 
-    $.ajax({
-        type: "get",
-        url: "/profile/get_team_dimension_info",
-        data: {"team_id": team_id, "school": school},
-        dataType: "json",
-        success: function (json_data) {
-            debugger
-            // 更新雷达图
-            set_radar_option(
-             [
-                        {text: '研究人员水平', max: 100},
-                        {text: '研究人员数量', max: 100},
-                        {text: '学校水平（985,211）', max: 100},
-                        {text: '实验平台', max: 100},
-                        {text: '成果数量', max: 100},
-                    ],
-            [
-                json_data["researcher_level_score"],
-                json_data["researcher_num_score"],
-                json_data["school_level_score"],
-                json_data["lab_score"],
-                json_data["achieve_num"],
-            ],
-                json_data["teacher_name"]
-        );
-        }
-    })
-}

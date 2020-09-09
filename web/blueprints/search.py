@@ -2,6 +2,7 @@ from flask import Blueprint, current_app
 from flask import render_template, request, send_from_directory
 from web.service.PatentSearchService import PatentSearchService
 from web.service.SchoolService import SchoolService
+from web.service import RelationshipService as relationService
 from web.service import searchService
 from web.log.Log import Logger
 import time
@@ -29,6 +30,7 @@ def hunt():
     :return:
     """
     input_key = request.form.get("input_key")
+    school = "东南大学"
     if input_key is not None:
         try:
             start = time.time()
@@ -40,7 +42,8 @@ def hunt():
             end = time.time()
             spend_time = end - start
             print("搜索时间", spend_time, "秒")
-            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], data=outcome_patent_dict, type="teacher", search_history=search_history)
+            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[],
+                                   data=outcome_patent_dict, type="teacher", search_history=search_history, school=school)
         except Exception as e:
             return render_template('error.html')
     else:
@@ -76,6 +79,17 @@ def school_profile(school):
         print("未找到该大学")
         return render_template('error.html')
 
+
+@search_bp.route('/getInstitutionRelation')
+def getInstitutionRelation():
+    """
+    获取该团队的关系数据
+    :return:
+    """
+    team_id = request.args.get("team_id")
+    institution = request.args.get("institution")
+    result = relationService.get_cooperate_rel_by_team_id_list([team_id], institution)
+    return result
 
 # 待删除
 # @search_bp.route('/institution/<school>/<institution>', methods=["GET"])

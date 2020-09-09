@@ -164,7 +164,7 @@ def get_teachers_info(teacher_ids, school):
     patent_num = len(patents)
     # 3. 获取这些学校的一流学科数量，证明其学校水平
     discipline = profile_dao.get_good_discipline_num_by_school(school)
-    discipline_num = discipline["cnt"]
+    discipline_num = discipline[0]["cnt"]
 
     dimensions_info = {
         "academician_num": academician_num,  # 院士数量
