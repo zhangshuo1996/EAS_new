@@ -179,3 +179,64 @@ def get_good_discipline_num_by_school(school):
         where school = ? and result like "A%%" 
     """
     return mysql.select(sql, school)
+
+
+def get_school_teacher_info(school):
+    """
+    获取该学校下的教师 实验室、人员荣誉信息
+    :param school:
+    :return:
+    """
+    sql = """
+        select i.lab, i.honor
+        from clean_inventor_backup i
+        LEFT JOIN school s
+        on i.school_id = s.id
+        where s.name = ?
+    """
+    return mysql.select(sql, school)
+
+
+def get_school_teacher_patent_num(school):
+    """
+    获取该学校下教师的专利数量
+    :param school:
+    :return:
+    """
+    sql = """
+        select count(1) cnt
+        from (
+        select ip.patent_id
+        from clean_inventor_backup i
+        LEFT JOIN school s
+        on i.school_id = s.id
+        LEFT JOIN c_inventor_patent_backup ip
+        on ip.inventor_id = i.id
+        where s.name = ?
+        GROUP BY ip.patent_id
+        ) t
+    """
+    return mysql.select_one(sql, school)
+
+
+def get_school_teacher_num(school):
+    """
+    获取学校下的研究人员数量
+    :param school:
+    :return:
+    """
+    sql = """
+        select count(1) cnt
+        from (
+        select ip.inventor_id
+        from clean_inventor_backup i
+        LEFT JOIN school s
+        on i.school_id = s.id
+        LEFT JOIN c_inventor_patent_backup ip
+        on ip.inventor_id = i.id
+        where s.name = ? and institution is not null
+        GROUP BY ip.inventor_id
+        ) t
+    """
+    return mysql.select_one(sql, school)
+

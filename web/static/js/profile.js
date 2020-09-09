@@ -1,44 +1,33 @@
-let institution_patent_chart = getEChartsObject("institution-patent-pie");
+// let institution_patent_chart = getEChartsObject("institution-patent-pie");
+let institution_patent_chart = getEChartsObject("institution-patent-bar");
+let school_radar_chart = getEChartsObject("school-radar");
 
-/**TODO
- * 学校简介/重点学科/实验平台部分的伸缩
- */
 
 
 /**
- * 下一页与上一页
+ * 加载雷达图
  */
-// $("#next_page").on("click", function () {
-//     debugger
-//     document.getElementsByTagName('BODY')[0].scrollTop=document.getElementsByTagName('BODY')[0].scrollHeight;
-// });
-//
-// $("#up_page").on("click", function () {
-//     debugger
-//     document.getElementsByTagName('BODY')[0].scrollTop=0;
-// });
-
-
-// $(document).on('mousewheel DOMMouseScroll', onMouseScroll);
-// function onMouseScroll(e){
-//     e.preventDefault();
-//     var wheel = e.originalEvent.wheelDelta || -e.originalEvent.detail;
-//     var delta = Math.max(-1, Math.min(1, wheel) );
-//     if(delta < 0){//向下滚动
-//         window.scrollTo(0,document.body.scrollHeight);
-//         console.log('向下滚动');
-//     }else{//向上滚动
-//         window.scrollTo(0,0);
-//         console.log('向上滚动');
-//     }
-// }
+set_radar_option(
+     [
+                {text: '研究人员水平', max: 100},
+                {text: '研究人员数量', max: 100},
+                {text: '学校水平（985,211）', max: 100},
+                {text: '实验平台', max: 100},
+                {text: '成果数量', max: 100},
+            ],
+    [10, 10, 10, 10, 10],
+    school_radar_chart,
+);
 
 
 get_institution_patent_num(school);
+
+get_school_normalize_dimension_score();
+
+
 /*
 获取各学院的专利数量
  */
-
 function get_institution_patent_num(school){
     $.ajax({
         type: "get",
@@ -48,13 +37,54 @@ function get_institution_patent_num(school){
         success: function (json_data) {
             let institutions = json_data["institutions"];
             debugger
-            data = json_data["series"];
-            configure_angle_picture(institutions, data);
-            getInstitutionRelation(school, institutions[institutions.length - 1]);
-        }
+            data = {
+                "series": {
+                    "data": json_data["series"],
+                    "type": 'bar',
+                    "barWidth": 10
+                },
+                "xAxis": institutions
 
+            };
+            // configure_angle_picture(institutions, data);
+            set_option(institution_patent_chart, barOption, data);
+            // getInstitutionRelation(school, institutions[institutions.length - 1]);
+        }
     })
 }
+
+/**
+ * 获取学校归一化之后的各维度分数
+ * @param school
+ */
+function get_school_normalize_dimension_score(school="东南大学") {
+    $.ajax({
+        type: "get",
+        url: "/profile/get_school_normalize_dimension_score",
+        data: {"school": school},
+        dataType: "json",
+        success: function (json_data) {
+            set_radar_option(
+                 [
+                            {text: '研究人员水平', max: 100},
+                            {text: '研究人员数量', max: 100},
+                            {text: '学校水平（985,211）', max: 100},
+                            {text: '实验平台', max: 100},
+                            {text: '成果数量', max: 100},
+                        ],
+                [
+                    json_data["researcher_level_score"],
+                    json_data["researcher_num_score"],
+                    json_data["school_level_score"],
+                    json_data["lab_score"],
+                    json_data["achieve_num"],
+                ],
+                school_radar_chart,
+            );
+        }
+    })
+}
+
 
 /*
 配置极坐标下的柱状图
@@ -156,6 +186,6 @@ function configure_angle_picture(institutions, data) {
  */
 institution_patent_chart.on('click', function (params) {
     let institution = params.name;
-    getInstitutionRelation(school, institution);
+    // getInstitutionRelation(school, institution);
 });
 

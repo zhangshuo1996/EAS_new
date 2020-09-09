@@ -220,26 +220,16 @@ let graphOption = {
     ]
 };
 
-/**
- * 加载雷达图
- */
-set_radar_option(
-     [
-                {text: '研究人员水平', max: 100},
-                {text: '研究人员数量', max: 100},
-                {text: '学校水平（985,211）', max: 100},
-                {text: '实验平台', max: 100},
-                {text: '成果数量', max: 100},
-            ],
-    [10, 10, 10, 10, 10]
-);
+
 
 /**
  * 设置并加载雷达图
  * @param dimension
  * @param data
+ * @param chart
+ * @param teacher_name
  */
-function set_radar_option(dimension, data, teacher_name="点击右图节点查看科研水平评估") {
+function set_radar_option(dimension, data, chart, teacher_name="点击右图节点查看科研水平评估") {
     $("#radar_graph_header").html(teacher_name + "团队科研水平评估");
     let option = {
         title: {
@@ -274,9 +264,9 @@ function set_radar_option(dimension, data, teacher_name="点击右图节点查�
             }
         ]
     };
-    radar_chart.clear();
-    radar_chart.hideLoading();
-    radar_chart.setOption(option);
+    chart.clear();
+    chart.hideLoading();
+    chart.setOption(option);
 }
 
 /**

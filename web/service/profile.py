@@ -54,6 +54,7 @@ def get_school_introduction(school):
     result = profile_dao.get_school_introduction(school)
     return result["introduction"]
 
+
 def get_school_lab(school):
     """
     获取学院的实验平台
@@ -78,9 +79,7 @@ def get_institution_patent_num(school):
     series = []
     for dic in _data:
         institutions.append(dic["institution"])
-        series.append([
-            0, math.ceil(math.log(dic["cnt"], 2)), dic["cnt"]
-        ])
+        series.append(dic["cnt"])
 
     return {
         "institutions": institutions,
@@ -157,31 +156,15 @@ def get_teachers_info(teacher_ids, school):
     :param teacher_ids:
     :return:
     """
-    academician_num = 0
-    excellent_young = 0
-    national_lab_num = 0
-    province_lab_num = 0
-
     # 1. 获取教师的实验平台信息， 荣誉信息（院士，长江...)
     lab_honor_info = profile_dao.get_labs_honors_by_teacher_ids(teacher_ids)
-    for dic in lab_honor_info:
-        lab = dic["lab"] if dic["lab"] is not None else ""
-        honor = dic["honor"] if dic["honor"] is not None else ""
-        if "国家" in lab or "教育部" in lab:
-            national_lab_num = 1
-        if "省" in lab:
-            province_lab_num = 1
-
-        if "长江" in honor or "杰青" in honor:
-            excellent_young += 1
-        if "院士" in honor:
-            academician_num += 1
+    academician_num, excellent_young, national_lab_num, province_lab_num = statistic_lab_honor_info(lab_honor_info)
     # 2. 获取多个教师的的拥有的专利数量
     patents = profile_dao.get_patent_num_by_teacher_ids(teacher_ids)
     patent_num = len(patents)
     # 3. 获取这些学校的一流学科数量，证明其学校水平
     discipline = profile_dao.get_good_discipline_num_by_school(school)
-    discipline_num = discipline[0]["cnt"]
+    discipline_num = discipline["cnt"]
 
     dimensions_info = {
         "academician_num": academician_num,  # 院士数量
@@ -190,6 +173,89 @@ def get_teachers_info(teacher_ids, school):
         "province_lab_num": province_lab_num,  # 是否有省级重点实验室
         "patent_num": patent_num,  # 专利数量
         "good_discipline_num": discipline_num,  # 该学校的一流学科数量
+    }
+    return dimensions_info
+
+
+def statistic_lab_honor_info(lab_honor_info):
+    """
+    根据一个学校中所有教师的荣誉与实验室信息，统计该学校下的荣誉与实验室信息
+    :param lab_honor_info:
+    :return:
+    """
+    academician_num = 0
+    excellent_young = 0
+    national_lab_num = 0
+    province_lab_num = 0
+    for dic in lab_honor_info:
+        lab = dic["lab"] if dic["lab"] is not None else ""
+        honor = dic["honor"] if dic["honor"] is not None else ""
+        if "国家" in lab or "教育部" in lab:
+            national_lab_num += 1
+        if "省" in lab:
+            province_lab_num += 1
+
+        if "长江" in honor or "杰青" in honor:
+            excellent_young += 1
+        if "院士" in honor:
+            academician_num += 1
+
+    return academician_num, excellent_young, national_lab_num, province_lab_num
+
+
+def get_school_normalize_dimension_score(school):
+    """
+    获取学校归一化之后的各维度分数
+    TODO: 评分指标待调整，目前使用的评分是对团队各项指标的评分标准
+    :return:
+    """
+    # 1. 获取学校中所有教师的头衔信息，专利数量，项目数量，所在的实验室列表
+    dimension_info = get_school_dimensions_info(school)
+    # 2. 根据获取的各维度信息进行综合打分
+    school_level_score = cal_school_score_by_discipline(dimension_info["good_discipline_num"])
+    achieve_num = cal_achieve_score(dimension_info["patent_num"])
+    researcher_num_score = cal_researcher_num_score(dimension_info["researcher_num"])
+    researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
+    lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    return {
+        "school_level_score":  school_level_score,
+        "achieve_num": achieve_num,
+        "researcher_num_score":  researcher_num_score,
+        "researcher_level_score":  researcher_level_score,
+        "lab_score":  lab_score,
+    }
+
+
+def get_school_dimensions_info(school):
+    """
+    获取该学校的各维度信息
+    :param school:
+    :return: {
+                "academician_num": academician_num,    # 院士数量
+                "excellent_young": excellent_young,    # 杰青数量
+                "national_lab_num": national_lab_num,  # 国家、教育部重点实验室数量
+                "patent_num": patent_num,              # 专利数量
+                "good_discipline_num": discipline_num, # 该学校的一流学科数量
+            }
+    """
+    # 获取该学校下教师的荣誉与实验室信息
+    lab_honor_info = profile_dao.get_school_teacher_info(school)
+    academician_num, excellent_young, national_lab_num, province_lab_num = statistic_lab_honor_info(lab_honor_info)
+    # 获取该学校下教师的专利数量
+    patent_num = profile_dao.get_school_teacher_patent_num(school)["cnt"]
+    # 获取这些学校的一流学科数量，证明其学校水平
+    discipline = profile_dao.get_good_discipline_num_by_school(school)
+    discipline_num = discipline[0]["cnt"]
+    # 获取该学校的研究人员数量
+    researcher_num = profile_dao.get_school_teacher_num(school)["cnt"]
+    dimensions_info = {
+        "academician_num": academician_num,  # 院士数量
+        "excellent_young": excellent_young,  # 长江、杰青数量
+        "national_lab_num": national_lab_num,  # 是否有国家、教育部重点实验室
+        "province_lab_num": province_lab_num,  # 是否有省级重点实验室
+        "patent_num": patent_num,  # 专利数量
+        "good_discipline_num": discipline_num,  # 该学校的一流学科数量
+        "researcher_num": researcher_num,  # 该学校研究人员数量
     }
     return dimensions_info
 

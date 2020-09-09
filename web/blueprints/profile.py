@@ -94,5 +94,15 @@ def get_team_dimension_info():
     teacher_name = profile_service.get_teacher_name_by_id(team_id)
     result = profile_service.get_team_dimension_info(team_id, school)
     result["teacher_name"] = teacher_name
+    return result
 
+
+@profile_bp.route('/get_school_normalize_dimension_score')
+def get_school_normalize_dimension_score():
+    """
+    获取学校归一化之后的各维度分数
+    :return:
+    """
+    school = request.args.get("school")
+    result = profile_service.get_school_normalize_dimension_score(school)
     return result
