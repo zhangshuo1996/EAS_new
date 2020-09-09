@@ -8,6 +8,7 @@ env/
 school_avatar/
 school_picture/
 school_header/
+bw_school_avatar
 
 web/config.py
 web/static/image/backup1.jpg

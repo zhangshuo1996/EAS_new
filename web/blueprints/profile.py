@@ -43,7 +43,8 @@ def school_header_logo(school):
     展示学校画像中最上方的图片
     """
     path = current_app.config["SCHOOL_HEADER_PATH"]
-    avatar_path = current_app.config["SCHOOL_AVATAR_PATH"]
+    # avatar_path = current_app.config["SCHOOL_AVATAR_PATH"]
+    avatar_path = current_app.config["BW_SCHOOL_AVATAR_PATH"]
     return profile_service.get_school_header_logo(school, path, avatar_path)
 
 

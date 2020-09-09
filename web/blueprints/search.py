@@ -120,5 +120,6 @@ def avatar(filename):
     """
     寻找头像
     """
-    upload_path = current_app.config["SCHOOL_AVATAR_PATH"]
-    return send_from_directory(upload_path, filename + '.png')
+    # upload_path = current_app.config["SCHOOL_AVATAR_PATH"]
+    avatar_path = current_app.config["BW_SCHOOL_AVATAR_PATH"]
+    return send_from_directory(avatar_path, filename + '.png')
