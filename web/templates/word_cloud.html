@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+{#    <script src="https://cdn.bootcss.com/wordcloud2.js/1.1.0/wordcloud2.js"></script>#}
+    <script src="{{ url_for('static', filename='js/wordcloud2.js') }}"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="canvas-container" align="center">
+        <canvas id="canvas" width="600px" height="400px"></canvas>
+    </div>
+</body>
+</html>
+<script>
+    var options = eval({
+        "list": [
+            ['人工智能', 10],
+            ['机器学习', 9],
+            ['Alibaba', 7],
+            ['Baidu', 6],
+            ['NetEase', 4],
+            ['JD', 5],
+            ['Youku', 5],
+            ['Meituan', 2],
+            ['Douban', 3],
+            ['Doubanjdjdj', 3],
+            ['人工智能', 10],
+            ['机器学习', 9],
+            ['Alibaba', 7],
+            ['Baidu', 6],
+            ['NetEase', 4],
+            ['JD', 5],
+            ['Youku', 5],
+            ['Meituan', 2],
+            ['Douban', 3],
+            ['Doubanjdjdj', 3],
+            ['人工智能', 10],
+            ['机器学习', 9],
+            ['Alibaba', 7],
+            ['Baidu', 6],
+            ['NetEase', 4],
+            ['JD', 5],
+            ['Youku', 5],
+            ['Meituan', 2],
+            ['Douban', 3],
+            ['Doubanjdjdj', 3],
+        ],
+        "gridSize": 1, // 网格尺寸
+        "weightFactor": 2, // number to multiply for size of each word in the list
+        "fontWeight": 'normal', // 'normal', 'bold' or a callback
+        "fontFamily": 'Times, serif', // font to use
+        "color": 'random-light', // 'random-dark' or 'random-light'
+        "backgroundColor": '#FFF', // the color of canvas
+        "rotateRatio": 0 // probability for the word to rotate. 1 means always rotate
+    });
+    var canvas = document.getElementById('canvas');
+    WordCloud(canvas, options);
+</script>

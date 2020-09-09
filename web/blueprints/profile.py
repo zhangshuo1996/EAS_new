@@ -106,3 +106,13 @@ def get_school_normalize_dimension_score():
     school = request.args.get("school")
     result = profile_service.get_school_normalize_dimension_score(school)
     return result
+
+
+@profile_bp.route('/word_cloud')
+def word_cloud():
+    """
+    测试词云
+    :return:
+    """
+    return render_template("word_cloud.html")
+
