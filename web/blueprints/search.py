@@ -30,22 +30,22 @@ def hunt():
     :return:
     """
     input_key = request.form.get("input_key")
-    school = "东南大学"
+    school = request.form.get("school")
     if input_key is not None:
-        try:
-            start = time.time()
-            # 记录该次搜索的企业需求
-            searchService.save_this_search_text(1, input_key)
-            patent_service = PatentSearchService(input_key)  # 搜索专利服务
-            outcome_patent_dict = patent_service.construct_teacher_in_res()  # 获取相似成果对应的团队
-            search_history = patent_service.get_search_history()
-            end = time.time()
-            spend_time = end - start
-            print("搜索时间", spend_time, "秒")
-            return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[],
-                                   data=outcome_patent_dict, type="teacher", search_history=search_history, school=school)
-        except Exception as e:
-            return render_template('error.html')
+        # try:
+        start = time.time()
+        # 记录该次搜索的企业需求
+        searchService.save_this_search_text(1, input_key)
+        patent_service = PatentSearchService(input_key, school)  # 搜索专利服务
+        outcome_patent_dict = patent_service.construct_teacher_in_res()  # 获取相似成果对应的团队
+        search_history = patent_service.get_search_history()
+        end = time.time()
+        spend_time = end - start
+        print("搜索时间", spend_time, "秒")
+        return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[],
+                               data=outcome_patent_dict, type="teacher", search_history=search_history, school=school)
+        # except Exception as e:
+        #     return render_template('error.html')
     else:
         return render_template('search.html')
 

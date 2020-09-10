@@ -5,11 +5,11 @@ class PatentDAO():
 
     teacher_patent = []
 
-    def __init__(self, patent_id_list):
+    def __init__(self, patent_id_list, school):
         """
 
         """
-        self.get_teacher_patent(patent_id_list)
+        self.get_teacher_patent(patent_id_list, school)
 
     def return_teacher_patent(self):
         """
@@ -17,7 +17,7 @@ class PatentDAO():
         """
         return self.teacher_patent
 
-    def get_teacher_patent(self, patent_id_list):
+    def get_teacher_patent(self, patent_id_list, school):
         """
         根据获取的专利id得到对应的教师id,以及专利名
         :return:
@@ -38,8 +38,9 @@ class PatentDAO():
             on ip.patent_id = p.id
             LEFT JOIN school s
             on i.school_id = s.id
-            where p.id in (
-        """
+            where s.name = \"{school}\" and p.id in (
+        """.format(school=school)
+        # 上面sql中的s.name = school 条件用于只取某一学校的成果
         teacher_patent = []
         # sql = "("
         if len(patent_id_list) != 0:

@@ -52,12 +52,26 @@
 
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-10" style="padding-left: 120px; height: 100px; width: 1450px;padding-top: 20px">
+        <div class="col-md-7" style="padding-left: 120px; height: 100px; width: 1450px;padding-top: 20px">
             <div style="height:120px; background-image: url({{ url_for("profile.school_header_background", school=school) }}); background-repeat: no-repeat; background-size: cover">
-                <img src="{{ url_for("profile.school_header_logo", school=school) }}" height="80px" width="273px" class="" alt="..." style="padding-top: 10px; padding-bottom: 5px;">
+                <img src="{{ url_for("profile.school_header_logo", school=school) }}" height="80px" width="200px" class="" alt="..." style="padding-top: 10px; padding-bottom: 5px;">
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-3">
+            <div style="padding-top: 50px">
+                    <form method="post"  action="{{ url_for("search.hunt") }}">
+                        <div class="input-group input-group-newsletterp">
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="在{{ school }}内检索相关成果及团队">
+                                <input type="text" class="d-none" name="school" id="school" value="{{ school }}">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -69,12 +83,7 @@
         <div class="col-md-7" style="padding-left: 120px; padding-top: 70px;">
             <div class="card">
                 <div class="card-header">{{ school }}各学院专利数量统计
-                <div >
-                        <form method="post" action="{{ url_for("search.hunt") }}" style="width: 30px">
-                            <input type="text" class="input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
-                            <input type="submit" class="input-lg" name="submit"  value="搜索">
-                        </form>
-                    </div>
+
                 </div>
                 <div class="header-body">
                     <div id="institution-patent-bar" style="height: 480px">

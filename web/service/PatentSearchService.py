@@ -24,15 +24,18 @@ class PatentSearchService:
     teacher_patent = []
     teacher_basic_info = None
     patentDao = None
+    school = None
 
-    def __init__(self, input_key):
+    def __init__(self, input_key, school):
         """
         初始化service
         :param input_key:
+        :param school:
         """
+        self.school = school
         self.get_ids_by_input(input_key)  # 调用restful服务获得相似的专利id
         self.combine_id_distance()
-        self.patentDao = PatentDAO(patent_id_list=self.patent_id_list)  # 实例化专利数据类
+        self.patentDao = PatentDAO(patent_id_list=self.patent_id_list, school=school)  # 实例化专利数据类
         self.teacher_patent = self.patentDao.return_teacher_patent()  # 获取专利与教师的对应
         self.teacher_basic_info = self.patentDao.get_teacher_basic_info()  # 获取教师的基本信息
 
