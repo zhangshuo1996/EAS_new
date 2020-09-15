@@ -115,7 +115,7 @@ def get_cooperate_rel_by_team_id_list(team_id_list, institution, patent_num):
         cql = """
                    match p=(t1:Teacher)-[r:cooperate]-(t2:Teacher) 
                     where t1.team in [{ids_str}] and t2.team in [{ids_str}] 
-                    and t1.patent > 0 and t1.institution = "{institution}" and t2.institution = "{institution}" 
+                    and t1.patent > 0 
                     and t1.patent > {patent_num} and t2.patent > {patent_num}
                     return NODES(p) as nodes, RELATIONSHIPS(p) as relationship
                 """

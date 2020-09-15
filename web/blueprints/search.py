@@ -1,10 +1,12 @@
-from flask import Blueprint, current_app
-from flask import render_template, request, send_from_directory
+from flask import Blueprint, current_app, g
+from flask import render_template, request, send_from_directory, render_template_string, session
 from web.service.PatentSearchService import PatentSearchService
 from web.service.SchoolService import SchoolService
 from web.service import RelationshipService as relationService
 from web.service import searchService
+from web.service import profile as profile_service
 from web.log.Log import Logger
+from web.utils import make_pdf
 import time
 
 log = Logger('log/logs/log_search', level='debug')
@@ -32,34 +34,31 @@ def hunt():
     input_key = request.form.get("input_key")
     school = request.form.get("school")
     if input_key is not None:
-        # try:
         start = time.time()
-        # 记录该次搜索的企业需求
-        searchService.save_this_search_text(1, input_key)
         patent_service = PatentSearchService(input_key, school)  # 搜索专利服务
         outcome_patent_dict = patent_service.construct_teacher_in_res()  # 获取相似成果对应的团队
+        current_app.outcome = outcome_patent_dict
+        outcome_id = searchService.save_this_search_text(1, input_key)  # 记录该次搜索的企业需求
         search_history = patent_service.get_search_history()
         end = time.time()
         spend_time = end - start
         print("搜索时间", spend_time, "秒")
-        return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[],
+        return render_template("search_outcome.html", input_key=input_key, outcome_paper_list=[], outcome_id=outcome_id,
                                data=outcome_patent_dict, type="teacher", search_history=search_history, school=school)
-        # except Exception as e:
-        #     return render_template('error.html')
     else:
         return render_template('search.html')
 
 
-@search_bp.route("/get_search_outcome")
-def get_search_outcome():
-    """
-    根据搜索的关键字获取搜索结果， ajax专用
-    :return:
-    """
-    input_key = request.args.get("input_key")
-    patent_service = PatentSearchService(input_key)  # 搜索专利服务
-    outcome_patent_list = patent_service.construct_teacher_in_res()
-    return {"data": outcome_patent_list}
+# @search_bp.route("/get_search_outcome")
+# def get_search_outcome():
+#     """
+#     根据搜索的关键字获取搜索结果， ajax专用
+#     :return:
+#     """
+#     input_key = request.args.get("input_key")
+#     patent_service = PatentSearchService(input_key)  # 搜索专利服务
+#     outcome_patent_list = patent_service.construct_teacher_in_res()
+#     return {"data": outcome_patent_list}
 
 
 @search_bp.route('/school_profile/<school>')
@@ -89,6 +88,8 @@ def getInstitutionRelation():
     team_id = request.args.get("team_id")
     institution = request.args.get("institution")
     result = relationService.get_cooperate_rel_by_team_id_list([team_id], institution)
+    teacher_name = profile_service.get_teacher_name_by_id(team_id)
+    result["leader"] = teacher_name
     return result
 
 # 待删除
@@ -137,3 +138,17 @@ def avatar(filename):
     # upload_path = current_app.config["SCHOOL_AVATAR_PATH"]
     avatar_path = current_app.config["BW_SCHOOL_AVATAR_PATH"]
     return send_from_directory(avatar_path, filename + '.png')
+
+
+@search_bp.route("/get_pdf", methods=["POST"])
+def get_pdf3():
+    """
+    获取搜索结果中 第i个 团队对应的pdf
+    :return:
+    """
+    page_num = request.form.get("page_num")
+    outcome = current_app.outcome
+    doc_path, filename = make_pdf.do_test(page_num, outcome)
+    return send_from_directory(doc_path, filename)
+
+

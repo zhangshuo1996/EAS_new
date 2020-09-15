@@ -49,7 +49,7 @@ if (!window.setImmediate) {
         if (!callbacks[id]) {
           return;
         }
-
+        return;
         callbacks[id]();
         callbacks[id] = undefined;
       }, true);
@@ -443,7 +443,7 @@ if (!window.clearImmediate) {
 
     /* Get points on the grid for a given radius away from the center */
     var pointsAtRadius = [];
-    var getPointsAtRadius = function getPointsAtRadius(radius) {
+    var getPointsAtRadius = function getPointsAtRadius(radius, category) {
       if (pointsAtRadius[radius]) {
         return pointsAtRadius[radius];
       }
@@ -457,7 +457,7 @@ if (!window.clearImmediate) {
         center = get_center(4);
         let cluster_num = randomNum(0,3);
       if (radius === 0) {
-          points.push([center[cluster_num][0], center[cluster_num][1], 0]);
+          points.push([center[category][0], center[category][1], 0]);
       }
       while (t--) {
         // distort the radius to put the cloud in shape
@@ -465,13 +465,11 @@ if (!window.clearImmediate) {
         if (settings.shape !== 'circle') {
           rx = settings.shape(t / T * 2 * Math.PI); // 0 to 1
         }
-        center = get_center(2);
-        let cluster_num = randomNum(0,1);
-        debugger
+        center = get_center(4);
         // Push [x, y, t]; t is used solely for getTextColor()
         points.push([
-          center[cluster_num][0] + radius * rx * Math.cos(-t / T * 2 * Math.PI),
-          center[cluster_num][1] + radius * rx * Math.sin(-t / T * 2 * Math.PI) *
+          center[category][0] + radius * rx * Math.cos(-t / T * 2 * Math.PI),
+          center[category][1] + radius * rx * Math.sin(-t / T * 2 * Math.PI) *
             settings.ellipticity,
           t / T * 2 * Math.PI]);
       }
@@ -903,7 +901,7 @@ if (!window.clearImmediate) {
        calculate it's size and determine it's position, and actually
        put it on the canvas. */
     var putWord = function putWord(item) {
-        // debugger;
+        let category = item[3];
       var word, weight, attributes;
       if (Array.isArray(item)) {
         word = item[0];
@@ -964,9 +962,8 @@ if (!window.clearImmediate) {
         // Return true so some() will stop and also return true.
         return true;
       };
-        // debugger
       while (r--) {
-        var points = getPointsAtRadius(maxRadius - r);
+        var points = getPointsAtRadius(maxRadius - r, category);
 
         if (settings.shuffle) {
           points = [].concat(points);
@@ -1174,7 +1171,6 @@ if (!window.clearImmediate) {
       addEventListener('wordcloudstart', anotherWordCloudStart);
 
       var timer = loopingFunction(function loop() {
-          // debugger;
         if (i >= settings.list.length) {
           stoppingFunction(timer);
           sendEvent('wordcloudstop', false);

@@ -19,11 +19,11 @@ def save_this_search_text(searcher_id, search_text):
 def get_history_by_text(search_text):
     """
     判断是否存在相似的文本
-    :param input_key:
+    :param search_text:
     :return:
     """
     sql = """
-        select count(1) cnt
+        select id
         from search_history
         where search_text = ?
     """

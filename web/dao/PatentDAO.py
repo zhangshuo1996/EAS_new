@@ -19,7 +19,7 @@ class PatentDAO():
 
     def get_teacher_patent(self, patent_id_list, school):
         """
-        根据获取的专利id得到对应的教师id,以及专利名
+        根据获取的专利id得到对应的教师id,以及专利名,及其专利公开号
         :return:
             [
                 {
@@ -30,7 +30,7 @@ class PatentDAO():
             ]
         """
         sql = """
-            select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name
+            select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name, p.publication_number
             from clean_inventor_backup i
             LEFT JOIN c_inventor_patent_backup ip
             on i.id = ip.inventor_id

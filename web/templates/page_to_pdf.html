@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>html2canvas example</title>
+    <style type="text/css">
+
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li>one</li>
+          <li>one</li>
+          <li>one</li>
+          <li>one</li>
+          <li>one</li>
+          <li>one</li>
+        </ul>
+      </nav>
+    </header>
+    <div id="renderPdf">
+        1111111
+    </div>
+        <section>
+          <aside>
+            <h3>it is a title</h3>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+            <a href="">Stone Giant</a>
+
+         </aside>
+          <article>
+            <img src="{{ url_for("profile.school_header_logo", school="东南大学") }}">
+            <h2>Stone Giant</h2>
+            <p>Coming ... </p>
+            <p>以一团石头...</p>
+          </article>
+        </section>
+
+    <footer>write by linwalker @2017</footer>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/html2canvas.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/jspdf.debug.js') }}"></script>
+    <script type="text/javascript">
+        debugger
+
+        var downPdf = document.getElementById("renderPdf");
+        downPdf.onclick = function() {
+            html2canvas(document.body, {
+                onrendered:function(canvas) {
+
+                  //返回图片dataURL，参数：图片格式和清晰度(0-1)
+                  var pageData = canvas.toDataURL('image/jpeg', 1.0);
+
+                  //方向默认竖直，尺寸ponits，格式a4[595.28,841.89]
+                  var pdf = new jsPDF('', 'pt', 'a4');
+
+                  //addImage后两个参数控制添加图片的尺寸，此处将页面高度按照a4纸宽高比列进行压缩
+                  pdf.addImage(pageData, 'JPEG', 0, 0, 595.28, 592.28/canvas.width * canvas.height );
+
+                  pdf.save('stone.pdf');
+
+            }
+          })
+      }
+    </script>
+  </body>
+</html>

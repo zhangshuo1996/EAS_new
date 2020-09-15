@@ -1,8 +1,6 @@
 /*
 搜索点击事件监听
  */
-
-
 $("#submit_button").on("click", function () {
     let input_key = $("#input_key").val();
     if(input_key != ""){

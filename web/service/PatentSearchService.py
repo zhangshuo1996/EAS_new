@@ -56,7 +56,8 @@ class PatentSearchService:
         for dic in self.teacher_patent:
             patent_id = dic["patent_id"]
             patent_name = dic["patent_name"]
-            patent_info[patent_id] = patent_name
+            publication_number = dic["publication_number"]
+            patent_info[patent_id] = (patent_name, publication_number)
         return patent_info
 
     def get_ids_by_input(self, input_key):
@@ -64,7 +65,7 @@ class PatentSearchService:
         根据用户的输入内容, 通过调用restful服务获取与之相关的成果id
         :return:
         """
-        data = {"K": 200, "key": input_key}
+        data = {"K": 500, "key": input_key}
         url = "http://39.100.224.138:8777/search"
         data_json = json.dumps(data)
         headers = {'Content-type': 'application/json'}
@@ -134,7 +135,7 @@ class PatentSearchService:
                 .....
             }
             "patent_info": {
-                patent_id: patent_name,
+                patent_id: (patent_name, publication_number),
                 ....
             },
             "school_proportion":{
@@ -361,6 +362,7 @@ class PatentSearchService:
                 key = temp_key
                 max_times = _times
         return key
+
 
 
 if __name__ == '__main__':

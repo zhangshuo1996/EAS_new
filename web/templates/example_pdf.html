@@ -1,0 +1,48 @@
+<!-- Paste the following into a text file named 'template.prep'-->
+<!-- Look inside the file 'example_14.py' to see how this -->
+<!-- template is merged with values in a csv file to create -->
+<!-- a series of dynamic documents. The values in curly -->
+<!-- brackets are dynamically substituted by ReportLab's -->
+<!-- templating system, 'preppy'. -->
+{{def(name,location)}}
+<!DOCTYPE document SYSTEM "rml.dtd">
+<!-- this filename isn't used - instead the filename -->
+<!-- is created dynamically inside 'example_14.py' -->
+<document filename="example_14.pdf">
+ <template>
+     <pageTemplate id="main">
+         <pageGraphics>
+             <setFont name="Helvetica-Oblique" size="16"/>
+             <drawString x="100" y="700">Using RML with a templating system.</drawString>
+             <setFont name="Helvetica" size="16"/>
+             <!-- this demonstrates how to use python code directly inside your rml template. -->
+                 {{script}}
+                     import datetime
+                     today=datetime.datetime.today()
+                     today=today.strftime("%A %B %d, %Y")
+                 {{endscript}}
+             <drawString x="350" y="650">{{today}}</drawString>
+         </pageGraphics>
+         <frame id="first" x1="100" y1="400" width="400" height="200"/>
+     </pageTemplate>
+ </template>
+     <stylesheet>
+     <paraStyle name="textstyle1" fontName="Helvetica" fontSize="16" leading="16" spaceBefore="16"/>
+     </stylesheet>
+     <story>
+        <para style="textstyle1">
+            Hi {{name}},
+         </para>
+         <para style="textstyle1">
+         How are things in {{location}}?
+         </para>
+         <para style="textstyle1">
+         All the best, from ReportLab
+         </para>
+         {% for d in data %}
+             <para>
+                hahahhahaha
+             </para>
+         {% endfor %}
+     </story>
+</document>

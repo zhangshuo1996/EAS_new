@@ -46,64 +46,62 @@
             <form method="post"  action="{{ url_for("search.hunt") }}">
                 <div class="input-group input-group-newsletterp">
                     <div class="col-md-2"></div>
-                    <div class="col-md-7">
+                    <div class="col-md-9">
                         <input type="text" class="form-control input-lg" name="input_key" id="input_key" placeholder="请输入搜索内容">
+                        <input type="text" class="d-none" name="school" id="school" value="{{ school }}">
                     </div>
-                    <div class="col-md-1">
-                        <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索">
+                    <div class="col-md-1" style="right: 40px">
+                        <input type="submit" class="form-control input-lg" name="submit" id="submit_button" value="搜索" >
                     </div>
-                    <div class="col-md-2"></div>
                 </div>
+            </form>
+            <form id="my_form" class="m_form d-none" action="/search/get_pdf" method="post">
+                <input class="d-none" type="hidden" name="page_num" value="0" id="fill_data"/>
+                <button class="d-none" type="submit" id="submit_download"></button>
             </form>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3"></div>
         <ul id="nav_father" class="nav nav-tabs">
-
         </ul>
     </div>
     <br>
 
 
-    <div class="row">
+    <div class="row" >
         <div class="col-md-2"></div>
-        <div class="col-md-6">
+        <div class="col-md-6" id="download_ele">
             <div class="container" id="search_outcome">
 
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="container" style="width: 600px; height: 300px; position: fixed; top: 80px; right: 40px;">
                 <div class="card" >
-                    <div class="card-header" id="radar_graph_header">高校占比</div>
+                    <div class="card-header" id="radar_graph_header">**团队科研水平评估</div>
                     <div class="card-body" style="height: 240px" id="team-radar">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-5">
+{#        </div>#}
+{#        <div class="col-md-5">#}
             <div class="container" style="width: 600px; height: 700px; position: fixed; top: 450px; right: 40px;">
                 <div class="card">
-                    <div class="card-header" id="leader_name">历史搜索记录</div>
+                    <div class="card-header" id="leader_name">**团队合作关系</div>
                     <div class="card-body" style="height: 450px" id="team-relation-chart">
-{#                    <table class="mytable" style="width: 100%; border:0; table-layout: fixed;" \>#}
-{#                        <tr>#}
-{#                            <th></th>#}
-{#                            <th></th>#}
-{#                        </tr>#}
-{#                        {% for history in search_history %}#}
-{#                        <tr>#}
-{#                            <td style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="{{ history["search_text"] }}">{{ history["search_text"] }}</td>#}
-{#                            <td>{{ history["gmt_create"] }}</td>#}
-{#                        </tr>#}
-{#                        {% endfor %}#}
-{#                    </table>#}
 
                     </div>
                 </div>
             </div>
         </div>
+        <div id="next_page" style="position: fixed; right: 10px; top:450px">
+            <span class="fe fe-chevrons-right move-page" style="font-size: 2rem"></span>
+        </div>
+        <div id="last_page" style="position: fixed; left: 280px; top:450px">
+            <span class="fe fe-chevrons-left move-page" style="font-size: 2rem"></span>
+        </div>
+
     </div>
 
 {% endblock %}
@@ -124,4 +122,8 @@
         let school = {{ school|tojson }};
     </script>
     <script src="{{ url_for('static', filename='js/search_outcome.js') }}"></script>
+
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/html2canvas.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/download_page/jspdf.debug.js') }}"></script>
 {% endblock %}

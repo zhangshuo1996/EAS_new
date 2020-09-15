@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, current_app, url_for
+from flask import Flask, render_template, current_app, url_for, g
 from web.blueprints.search import search_bp
 from web.blueprints.profile import profile_bp
 from web.blueprints.main import main_bp
@@ -79,7 +79,11 @@ def register_commands(app):
 
 def register_template_context(app):
     """注册模板上下文"""
-    pass
+
+    @app.before_request
+    def before_request():
+        g.outcome_patent_dict = {}
+
     # @app.template_test()
     # def prefix_match(request_endpoint, datum):
     #     """验证前缀是否相同"""
@@ -131,3 +135,6 @@ def register_template_context(app):
 @login_manager.user_loader
 def load_user():
     return None
+
+
+

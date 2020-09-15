@@ -83,8 +83,9 @@ function getTeamRelation(team_id, institution){
         dataType: "json",
         success: function (json_data) {
             let graph_data = convert_graph_data(json_data);
+            let leader = json_data["leader"];
             reloadGraph(graph_data);
-            // $("#leader_name").html(leader + "团队");
+            $("#leader_name").html(leader + "团队内部合著关系");
         }
     })
 }
@@ -126,10 +127,18 @@ function convert_graph_data(data) {
         name_set.add(temp_nodes[i]["name"]);
         nodes.push({
             name: String(temp_nodes[i]["id"]),
+            school: school,
+            institution: temp_nodes[i]["institution"],
             label: temp_nodes[i]["name"],
             category: temp_nodes[i]["team"],
+            patent: temp_nodes[i]["patent"],
             draggable: true,
-            symbolSize: 26
+            symbolSize: get_node_size(temp_nodes[i]["patent"]),
+            itemStyle: {
+                normal: {
+                    color: '#2c7be5',
+                }
+            }
         });
         team_set.add(String(temp_nodes[i]["team"]));
     }
@@ -200,7 +209,7 @@ let graphOption = {
     series : [
         {
             type: 'graph',
-            layout: 'force',
+            layout: 'circular',
             data: [],
             links: [],
             categories: [],
@@ -209,14 +218,16 @@ let graphOption = {
             //是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
             roam: true,
             // 当鼠标移动到节点上，突出显示节点以及节点的边和邻接节点
-            // focusNodeAdjacency:true,
+            focusNodeAdjacency:true,
             // 是否启用图例 hover(悬停) 时的联动高亮。
             legendHoverLink : true,
+            circular: {
+                rotateLabel: true
+            },
             label: {
                 normal: {
-                    position: 'inside',
                     show : true,
-
+                    position: 'insideBottomRight',
                     //回调函数，显示用户名
                     formatter: function(params){
                         return params.data.label;
@@ -252,17 +263,16 @@ function reloadGraph(data){
     let categories = [];
     categories[0] = {name: ''};
     for (let i = 0; i < data.community; i++) {
-        debugger
         categories[i] = {
             name: data.core_node[String(i)]+"团队"
         };
     }
     graphOption.series[0].categories = categories;
-    graphOption.legend = [{
-        data: categories.map(function (a) {
-            return a.name;
-        })
-    }];
+    // graphOption.legend = [{
+    //     data: categories.map(function (a) {
+    //         return a.name;
+    //     })
+    // }];
     team_relationship_chart.setOption(graphOption);
     team_relationship_chart.hideLoading();
 }
@@ -274,11 +284,55 @@ function reloadGraph(data){
 //     //仅限节点类型
 //     if (params.dataType === 'node' && params.data.name !== "0"){
 //         //页面
-//         debugger;
 //         let team_id = params.data.team_id;
 //         // 获取这个team_id的各维度数据，构建雷达图
 //         // get_team_dimension_info(team_id);
 //     }
 // });
 
+
+function randomNum(minNum,maxNum){
+    switch(arguments.length){
+        case 1:
+            return parseInt(Math.random()*minNum+1,10);
+        break;
+        case 2:
+            return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+        break;
+            default:
+                return 0;
+            break;
+    }
+}
+
+/**
+ * 随机返回颜色
+ */
+function get_color() {
+    let COLOR_LIST = ["#2c7be5", "#6baed6", "#a1d99b", "#969696"];
+    let index = Math.floor((Math.random()*COLOR_LIST.length));
+    return COLOR_LIST[index];
+}
+
+
+/**
+ * 根据专利的数量 返回专家节点的大小
+ *
+ */
+function get_node_size(patent_num) {
+    if(patent_num < 5){
+        return 10;
+    }
+    if(patent_num < 10){
+        return 15;
+    }
+    if(patent_num < 20){
+        return 20;
+    }
+    if(patent_num < 30){
+        return 25;
+    }else{
+        return 30;
+    }
+}
 

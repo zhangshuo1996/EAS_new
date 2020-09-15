@@ -13,6 +13,16 @@ log = Logger('log/logs/log_search', level='debug')
 profile_bp = Blueprint("profile", __name__)
 
 
+@profile_bp.route("/school_card")
+def school_card():
+    """
+    展示学校卡片
+    :return:
+    """
+    schools = ["东南大学", "浙江大学", "清华大学", "吉林大学", "武汉大学", "同济大学", "重庆大学"]
+    return render_template("school_card.html", schools=schools)
+
+
 @profile_bp.route("/<school>")
 def index(school):
     """
@@ -93,7 +103,7 @@ def get_team_dimension_info():
     school = request.args.get("school")
     teacher_name = profile_service.get_teacher_name_by_id(team_id)
     result = profile_service.get_team_dimension_info(team_id, school)
-    result["teacher_name"] = teacher_name
+    result["leader"] = teacher_name
     return result
 
 
@@ -115,4 +125,13 @@ def word_cloud():
     :return:
     """
     return render_template("word_cloud.html")
+
+
+@profile_bp.route('/page_to_pdf')
+def page_to_pdf():
+    """
+    测试词云
+    :return:
+    """
+    return render_template("page_to_pdf.html")
 

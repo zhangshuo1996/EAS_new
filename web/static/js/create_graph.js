@@ -471,6 +471,13 @@ function set_radar_option(dimension, data, chart, teacher_name="点击右图节�
                 indicator: dimension,
                 radius: 100,
                 center: ['50%', '60%'],
+                splitArea: {
+                    areaStyle: {
+                        color: ['rgba(255, 255, 255, 0)'],
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 10
+                    }
+                },
             }
         ],
         series: [
@@ -481,7 +488,25 @@ function set_radar_option(dimension, data, chart, teacher_name="点击右图节�
                 data: [
                     {
                         value: data,
-                        name: '某主食手机'
+                        name: '某主食手机',
+                        itemStyle: { // 单个拐点标志的样式设置。
+                            normal: {
+                                borderColor: 'rgba(0,0,255,1)',
+                                // 拐点的描边颜色。[ default: '#000' ]
+                                borderWidth: 3,
+                                // 拐点的描边宽度，默认不描边。[ default: 0 ]
+                            }
+                        },
+                        lineStyle: { // 单项线条样式。
+                            normal: {
+                                opacity: 0.5 // 图形透明度
+                            }
+                        },
+                        areaStyle: { // 单项区域填充样式
+                            normal: {
+                                color: '#2c7be5' // 填充的颜色。[ default: "#000" ]
+                            }
+                        }
                     }
                 ]
             }

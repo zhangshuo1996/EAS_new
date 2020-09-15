@@ -145,6 +145,28 @@ def get_labs_honors_by_teacher_ids(teacher_ids):
     return mysql.select(sql)
 
 
+def get_project_num_by_teacher_ids(teacher_ids):
+    """
+    根据多个教师id 获取这些人的项目总数
+    :param teacher_ids:
+    :return:
+    """
+    sql = """
+        select count(1) cnt
+        from clean_inventor_backup i
+        LEFT JOIN project p
+        on i.id = p.teacher_id
+        where i.id in (
+    """
+    if len(teacher_ids) == 0:
+        return []
+    for _id in teacher_ids:
+        sql += str(_id) + ","
+    sql = sql[0:-1]
+    sql += ")"
+    return mysql.select_one(sql)
+
+
 def get_patent_num_by_teacher_ids(teacher_ids):
     """
     获取多个教师的所有专利id,以此获取其成果数量

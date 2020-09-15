@@ -140,12 +140,14 @@ def get_team_dimension_info(team_id, school):
     researcher_num_score = cal_researcher_num_score(researcher_num)
     researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
     lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    project_score = cal_project_num_score(dimension_info["project_num"])
     return {
         "school_level_score":  school_level_score,
         "achieve_num": achieve_num,
         "researcher_num_score":  researcher_num_score,
         "researcher_level_score":  researcher_level_score,
         "lab_score":  lab_score,
+        "project_score": project_score
     }
 
 
@@ -165,7 +167,8 @@ def get_teachers_info(teacher_ids, school):
     # 3. 获取这些学校的一流学科数量，证明其学校水平
     discipline = profile_dao.get_good_discipline_num_by_school(school)
     discipline_num = discipline[0]["cnt"]
-
+    # 4. 获取这一团队的项目数量
+    project_num = profile_dao.get_project_num_by_teacher_ids(teacher_ids)["cnt"]
     dimensions_info = {
         "academician_num": academician_num,  # 院士数量
         "excellent_young": excellent_young,  # 长江、杰青数量
@@ -173,6 +176,7 @@ def get_teachers_info(teacher_ids, school):
         "province_lab_num": province_lab_num,  # 是否有省级重点实验室
         "patent_num": patent_num,  # 专利数量
         "good_discipline_num": discipline_num,  # 该学校的一流学科数量
+        "project_num": project_num
     }
     return dimensions_info
 
@@ -350,3 +354,22 @@ def cal_lab_score(national_lab_num, province_lab_num):
     if province_lab_num == 1:
         return 80
     return 60
+
+
+def cal_project_num_score(project_num):
+    """
+    计算团队项目数量得分
+    :param project_num:
+    :return:
+    """
+    if project_num > 200:
+        return 100
+    if project_num > 150:
+        return 90
+    if project_num > 100:
+        return 80
+    if project_num > 50:
+        return 70
+    if project_num > 30:
+        return 60
+    return 50
