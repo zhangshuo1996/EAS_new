@@ -74,30 +74,20 @@
         </div>
     </div>
 
-    <div class="modal fade" id="visit_status_modal" style="">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 400px;">
-                <div class="card" >
-                    <div class="card-header" id="expert_name"> 请选择左图中的专家 </div>
-                    <div class="header-body">
-                        <div id="expert_info" style="height: 150px; padding-left: 100px">
-                            <form>
-                                <input type="radio" class="visit_status" value="0" checked="checked"> 未联系过 <br>
-                                <input type="radio" class="visit_status" value="1"> 联系过 <br>
-                                <input type="radio" class="visit_status" value="2"> 做过活动 <br>
-                                <input type="radio" class="visit_status" value="3"> 签过合同 <br>
-                                <input type="radio" class="visit_status" value="4"> 创业 <br>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+    <div class="card" id="visit_status_card" style="position: fixed; z-index: 999; top: 230px; right: 30px; width: 150px;">
+        <div class="card-header" id="expert_name"> 请选择专家 </div>
+        <div class="header-body">
+            <div id="expert_info" style="height: 100px; padding-left: 30px">
+                <form>
+                    <input type="radio" class="visit_status" value="0" checked="checked"> 未联系过 <br>
+                    <input type="radio" class="visit_status" value="1"> 联系过 <br>
+                    <input type="radio" class="visit_status" value="2"> 做过活动 <br>
+                    <input type="radio" class="visit_status" value="3"> 签过合同 <br>
+                    <input type="radio" class="visit_status" value="4"> 创业 <br>
+                </form>
             </div>
         </div>
-
     </div>
-
-
-
 
 {% endblock %}
 

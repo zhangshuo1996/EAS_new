@@ -59,7 +59,6 @@ institution_relation_chart.on("click", function (params) {
     $(check_box_arr[visit_status]).prop("checked", true);
     //
     $("#expert_name").html(expert_name);
-    $("#visit_status_modal").modal();
 });
 
 /**
@@ -67,6 +66,7 @@ institution_relation_chart.on("click", function (params) {
  */
 $("#institution-graph").on("click", function () {
     show_type = 1;
+    $("#visit_status_card").attr("class", "d-none");
     institution_relation_chart.clear();
     show_community_relation();
 });
@@ -75,6 +75,8 @@ $("#institution-graph").on("click", function () {
  * 点击显示联系图
  */
 $("#link-graph").on("click", function () {
+    $("#visit_status_card").attr("class", "card");
+
     show_type = 2;
     institution_relation_chart.clear();
     show_link_relation();
