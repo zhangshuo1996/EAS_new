@@ -70,6 +70,7 @@ def get_institution_patent_num(school):
         ORDER BY cnt desc
         ) t
         where t.cnt > 500
+        order by cnt asc
     """
     return mysql.select(sql, school)
 

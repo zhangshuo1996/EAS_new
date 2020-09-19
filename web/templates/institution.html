@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap_v4.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feather.css') }}">
+    <style>
+
+    </style>
+{% endblock %}
+
+
 {% block content %}
 
     <div class="row">
@@ -30,54 +39,64 @@
     <div class="row">
         <div class="col-md-1">
         </div>
-        <div class="col-md-8" style="padding-left: 120px; padding-top: 70px;">
+        <div class="col-md-3" style="padding-left: 120px; padding-top: 70px; ">
+            <div class="card" >
+                <div class="card-header" id="institution_name">{{ school }}-{{ institution }}各项指标评估</div>
+                <div class="header-body">
+                    <div id="institution-radar" style="height: 600px">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8" style=" padding-top: 70px; padding-right: 40px;">
             <div class="card">
                 <div class="card-header">
-                    {{ school }}-{{ institution }} 社区
-
-                    <ul class="nav nav-tabs nav-tabs-sm card-header-tabs" id="monthly-change" style="text-align: right">
-                        <li class="nav-item" data-toggle="chart" data-trigger="click" id="institution-graph">
-                            <a class="nav-link active" href="#" data-toggle="tab" data-type="0">活动</a>
-                        </li>
+{#                    {{ school }}-{{ institution }} 社区#}
+                    <ul class="nav nav-tabs nav-tabs-sm card-header-tabs pull-right" id="monthly-change">
                         <li class="nav-item" data-toggle="chart" data-trigger="click" id="link-graph">
-                            <a class="nav-link" href="#" data-toggle="tab" data-type="0">申报</a>
+                            <a class="nav-link active" href="#" data-toggle="tab" data-type="0">联系图</a>
+                        </li>
+                        <li class="nav-item" data-toggle="chart" data-trigger="click" id="institution-graph">
+                            <a class="nav-link" href="#" data-toggle="tab" data-type="0">学院社区</a>
                         </li>
                     </ul>
+
+
 
                 </div>
                 <div class="header-body">
                     <div id="institution-relation" style="height: 600px">
 
                     </div>
-
                 </div>
             </div>
         </div>
-        <div class="col-md-3" style=" padding-top: 70px; padding-right: 60px;">
-            <div class="card" >
-                <div class="card-header" id="expert_name"> 请选择左图中的专家 </div>
-                <div class="header-body">
-                    <div id="expert_info" style="height: 200px; padding-left: 40px">
-                        <input type="radio" class="visit_status" value="0" checked="checked"> 未拜访过 <br>
-                        <input type="radio" class="visit_status" value="1"> 已拜访过 <br>
-                        <input type="radio" class="visit_status" value="2"> 参与过活动 <br>
-                        <input type="radio" class="visit_status" value="3"> 签署了合同 <br>
-                        <input type="radio" class="visit_status" value="4"> 创业 <br>
+    </div>
+
+    <div class="modal fade" id="visit_status_modal" style="">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="width: 400px;">
+                <div class="card" >
+                    <div class="card-header" id="expert_name"> 请选择左图中的专家 </div>
+                    <div class="header-body">
+                        <div id="expert_info" style="height: 150px; padding-left: 100px">
+                            <form>
+                                <input type="radio" class="visit_status" value="0" checked="checked"> 未联系过 <br>
+                                <input type="radio" class="visit_status" value="1"> 联系过 <br>
+                                <input type="radio" class="visit_status" value="2"> 做过活动 <br>
+                                <input type="radio" class="visit_status" value="3"> 签过合同 <br>
+                                <input type="radio" class="visit_status" value="4"> 创业 <br>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card" >
-                <div class="card-header" id="institution_name">{{ school }}-{{ institution }}各项指标评估</div>
-                <div class="header-body">
-                    <div id="institution-radar" style="height: 300px">
-
-                    </div>
-                </div>
-            </div>
-
         </div>
 
     </div>
+
+
 
 
 {% endblock %}

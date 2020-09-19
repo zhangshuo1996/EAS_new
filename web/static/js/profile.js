@@ -34,15 +34,21 @@ function get_institution_patent_num(school){
         dataType: "json",
         success: function (json_data) {
             let institutions = json_data["institutions"];
+            debugger
             data = {
                 "series": {
                     "data": json_data["series"],
                     "type": 'bar',
                     "barWidth": 10
                 },
-                "xAxis": institutions
-
             };
+            barOption.yAxis.data = institutions;
+            barOption.grid = {
+                 left: '20px',
+                 right: '20px',
+                bottom: '1%',
+                containLabel: true
+            }
             set_option(institution_patent_chart, barOption, data);
         }
     })

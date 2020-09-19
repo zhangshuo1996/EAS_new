@@ -23,7 +23,7 @@ barOption = {
             type: 'shadow'
         }
     },
-    xAxis: {
+    yAxis: {
         type: 'category',
         data: [],
         axisTick: {
@@ -34,7 +34,7 @@ barOption = {
            rotate:20
         }
     },
-    yAxis: {
+    xAxis: {
         type: 'value',
         minInterval: 1
     },

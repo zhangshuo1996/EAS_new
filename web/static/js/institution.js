@@ -3,6 +3,7 @@ let institution_radar_chart = getEChartsObject("institution-radar");
 let team_id_dict = {}; // 序号： team_id
 let data = undefined;  // 后端传过来的关系原始数据
 let expert_id = undefined;
+let show_type = 2;  // show_type == 1：社区关系图， == 2 联系图
 
 show_community_relation();
 get_institution_dimension_info(school, institution);
@@ -11,7 +12,7 @@ get_institution_dimension_info(school, institution);
  * 复选框选择
  */
 $(".visit_status").on("click", function () {
-    if(expert_id == undefined){
+    if(expert_id === undefined){
         return ;
     }
     // 清除所有的复选框
@@ -30,7 +31,6 @@ $(".visit_status").on("click", function () {
         data: {"teacher_id": expert_id, "visit_status": visit_status},
         dataType: "json",
         success: function () {
-            debugger
             // 重新渲染联系图
             data = undefined;
             show_link_relation();
@@ -43,10 +43,13 @@ $(".visit_status").on("click", function () {
  * 点击关系图中的节点, 显示该专家的访问状态
  */
 institution_relation_chart.on("click", function (params) {
+    if(show_type === 1){
+        return;
+    }
     expert_id = params.data.name;  // 专家id
     let expert_name = params.data.label;  // 专家姓名
     let visit_status = params.data.visit_status;  // 访问状态
-    // 请求该老师的拜访状态 TODO：
+    // 请求该老师的拜访状态
     let check_box_arr = $(".visit_status");
     for(let i = 0; i < check_box_arr.length; i++){
         let check_box = $(check_box_arr[i]);
@@ -56,12 +59,14 @@ institution_relation_chart.on("click", function (params) {
     $(check_box_arr[visit_status]).prop("checked", true);
     //
     $("#expert_name").html(expert_name);
+    $("#visit_status_modal").modal();
 });
 
 /**
  * 点击显示社区关系图
  */
 $("#institution-graph").on("click", function () {
+    show_type = 1;
     institution_relation_chart.clear();
     show_community_relation();
 });
@@ -70,6 +75,7 @@ $("#institution-graph").on("click", function () {
  * 点击显示联系图
  */
 $("#link-graph").on("click", function () {
+    show_type = 2;
     institution_relation_chart.clear();
     show_link_relation();
 });
@@ -78,9 +84,9 @@ $("#link-graph").on("click", function () {
  * 显示社区关系图
  */
 function show_community_relation() {
-    if(data == undefined){
+    if(data === undefined){ // 如果关系数据未定义，请求关系数据
         get_institution_relation(1);
-    }else{
+    }else{  // 如果关系数据已定义，直接使用
         let graph_data = convert_graph_data(data, 1);
         reloadGraph(graph_data, "force", 1);
     }
@@ -91,7 +97,7 @@ function show_community_relation() {
  * 显示联系图
  */
 function show_link_relation() {
-    if(data == undefined){
+    if(data === undefined){
         get_institution_relation(2);
     }else{
         let graph_data = convert_graph_data(data, 2);
@@ -102,9 +108,8 @@ function show_link_relation() {
 
 /**
  * 获取学院内部的关系数据
- * @param show_type == 1：社区关系图， == 2 联系图
  */
-function get_institution_relation(show_type) {
+function get_institution_relation() {
     institution_relation_chart.showLoading();
     $.ajax({
         type: "get",
@@ -113,8 +118,8 @@ function get_institution_relation(show_type) {
         dataType: "json",
         success: function (json_data) {
             data = json_data;
-            let graph_data = convert_graph_data(json_data, show_type);
-            reloadGraph(graph_data, "force", show_type);
+            let graph_data = convert_graph_data(json_data);
+            reloadGraph(graph_data, "force");
             return true;
         }
     })
@@ -152,10 +157,11 @@ function get_institution_dimension_info(school, institution) {
     })
 }
 
+
 /**
  * 转换关系图数据
  */
-function convert_graph_data(data, show_type=1) {
+function convert_graph_data(data) {
     let temp_links = data.links;
     let temp_nodes = data.nodes;
     let links = [];
@@ -188,32 +194,9 @@ function convert_graph_data(data, show_type=1) {
         if(name_set.has(temp_nodes[i]["name"])){
             continue;
         }
-        let category = undefined;
-        if(show_type === 2){  // 显示联系图
-            let visit_status = temp_nodes[i]["visit_status"];
-            let color = undefined;
-            if(visit_status == 0){
-                color = '#2c7be5';
-                category = "未联系过"
-            }else if(visit_status == 1){
-                color = '#e6550d';
-                category = "联系过";
-            }else if(visit_status == 2){
-                color = '#31a354';
-                category = "做过活动"
-            }else if(visit_status == 3){
-                color = '#756bb1';
-                category = "签过合同"
-            }else{
-                color = '#636363';
-                category = "创业";
-            }
-            normal_style = {
-                color: color,
-            }
-        }
         name_set.add(temp_nodes[i]["name"]);
-        if(show_type == 1){
+        let category = undefined;
+        if(show_type === 1){
             nodes.push({
                 name: String(temp_nodes[i]["id"]),
                 school: school,
@@ -229,6 +212,12 @@ function convert_graph_data(data, show_type=1) {
                 }
             });
         }else{
+            let visit_status = temp_nodes[i]["visit_status"];
+            let visit_status_color = {0: '#2c7be5', 1: '#e6550d', 2: '#31a354', 3: '#756bb1', 4: '#636363'};
+            category = visit_status;
+            normal_style = {
+                color: visit_status_color[visit_status],
+            };
             nodes.push({
                 name: String(temp_nodes[i]["id"]),
                 school: school,
@@ -243,6 +232,7 @@ function convert_graph_data(data, show_type=1) {
                     normal: normal_style,
                 }
             });
+
         }
 
         team_set.add(String(temp_nodes[i]["team"]));
@@ -251,7 +241,7 @@ function convert_graph_data(data, show_type=1) {
     let index = 0;
     for(let team_id of team_set){
         let team_leader = get_team_principle(team_id, temp_nodes);
-        if(team_leader == undefined){
+        if(team_leader === undefined){
             continue;
         }
         team_map[index] = team_leader;
@@ -270,7 +260,6 @@ function convert_graph_data(data, show_type=1) {
         team_set: team_set
     };
 }
-
 
 
 //关系图属性
@@ -350,24 +339,29 @@ let graphOption = {
  * 重新加载关系图数据，把数据赋值给graphOption中的data
  * @param data 关系图数据
  */
-function reloadGraph(data, layout="circular", show_type=1){
+function reloadGraph(data, layout="circular"){
     if(!"nodes" in data) return;
     let links = data.links;
     graphOption.series[0].data = data.nodes;
     graphOption.series[0].links = links;
     let categories = [];
-    categories[0] = {name: ''};
-    for (let i = 0; i < data.community; i++) {
-        categories[i] = {
-            name: data.core_node[String(i)] + "团队"
-        };
+    if(show_type === 1){
+        categories[0] = {name: ''};
+        for (let i = 0; i < data.community; i++) {
+            categories[i] = {
+                name: data.core_node[String(i)] + "团队"
+            };
+        }
+    }else{
+        categories = [{name: "未联系过"},{name: "联系过"},{name: "做过活动"},{name: "签过合同"},{name: "创业"}]
     }
     graphOption.series[0].layout = layout;
     graphOption.series[0].categories = categories;
     if(show_type === 1){  // 社区关系图才显示图例
         graphOption.legend = [{
-            x: 'left',
+            x: 'right',
             y: 'center',
+            padding:[5, 30, 5, 10],
             orient: 'vertical',
             data: categories.map(function (a) {
                 return a.name;
@@ -376,13 +370,13 @@ function reloadGraph(data, layout="circular", show_type=1){
     }else{
         graphOption.color = ['#2c7be5','#e6550d', '#31a354', '#756bb1', '#636363'];
         graphOption.legend = [{
-            x: 'left',
+            x: 'right',
             y: 'center',
+            padding:[5, 30, 5, 10],
             orient: 'vertical',
             data: ["未联系过","联系过","做过活动","签过合同","创业"]
         }];
     }
-    debugger
     institution_relation_chart.clear();
     institution_relation_chart.setOption(graphOption);
     institution_relation_chart.hideLoading();
