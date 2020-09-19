@@ -355,7 +355,7 @@ function reloadGraph(data, layout="circular"){
             };
         }
     }else{
-        categories = [{name: "未联系过"},{name: "联系过"},{name: "做过活动"},{name: "签过合同"},{name: "创业"}]
+        categories = [{name: "未联系过"},{name: "已联系过"},{name: "做过活动"},{name: "签过合同"},{name: "创业"}]
     }
     graphOption.series[0].layout = layout;
     graphOption.series[0].categories = categories;
@@ -376,7 +376,7 @@ function reloadGraph(data, layout="circular"){
             y: 'center',
             padding:[5, 30, 5, 10],
             orient: 'vertical',
-            data: ["未联系过","联系过","做过活动","签过合同","创业"]
+            data: ["未联系过","已联系过","做过活动","签过合同","创业"]
         }];
     }
     institution_relation_chart.clear();
