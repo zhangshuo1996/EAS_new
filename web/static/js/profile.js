@@ -1,7 +1,5 @@
-// let institution_patent_chart = getEChartsObject("institution-patent-pie");
 let institution_patent_chart = getEChartsObject("institution-patent-bar");
 let school_radar_chart = getEChartsObject("school-radar");
-
 
 
 /**
@@ -36,7 +34,6 @@ function get_institution_patent_num(school){
         dataType: "json",
         success: function (json_data) {
             let institutions = json_data["institutions"];
-            debugger
             data = {
                 "series": {
                     "data": json_data["series"],
@@ -46,9 +43,7 @@ function get_institution_patent_num(school){
                 "xAxis": institutions
 
             };
-            // configure_angle_picture(institutions, data);
             set_option(institution_patent_chart, barOption, data);
-            // getInstitutionRelation(school, institutions[institutions.length - 1]);
         }
     })
 }
@@ -84,6 +79,15 @@ function get_school_normalize_dimension_score(school="东南大学") {
         }
     })
 }
+
+
+/**
+ * 柱状图点击事件, 跳转至学院画像
+ */
+institution_patent_chart.on("click", function (params) {
+    let institution = params.name;
+    window.location.href = "/profile/institution_profile/" + school + "/" + institution;
+});
 
 
 /*

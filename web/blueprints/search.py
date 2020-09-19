@@ -79,8 +79,8 @@ def school_profile(school):
         return render_template('error.html')
 
 
-@search_bp.route('/getInstitutionRelation')
-def getInstitutionRelation():
+@search_bp.route('/getTeamRelation')
+def getTeamRelation():
     """
     获取该团队的关系数据
     :return:
@@ -91,43 +91,6 @@ def getInstitutionRelation():
     teacher_name = profile_service.get_teacher_name_by_id(team_id)
     result["leader"] = teacher_name
     return result
-
-# 待删除
-# @search_bp.route('/institution/<school>/<institution>', methods=["GET"])
-# def institution(school, institution):
-#     print(school, institution)
-#     try:
-#         institution_service = InstitutionService()
-#         outcome_list, discipline = institution_service.get_institution_patent(school, institution)
-#         ip = request.remote_addr
-#         log.logger.info(log.combine_msg(ip=ip, username="none", event="visit_institution_page",
-#                                         message="normal|" + school + institution))
-#         if outcome_list is None or discipline is None:
-#             return render_template("error.html")
-#         else:
-#             return render_template("institution.html", outcome_list=outcome_list, discipline=discipline)
-#
-#     except Exception as e:
-#         print("输入的学校或学院有误", e)
-#         ip = request.remote_addr
-#         log.logger.warn(log.combine_msg(ip=ip, username="none", event="visit_institution_page",
-#                                         message="warn|" + school + institution + "|" + traceback.format_exc()))
-#         return render_template("error.html")
-
-
-# 待删除
-# @search_bp.route('/teacher/<teacher_id>', methods=["GET"])
-# def teacher(teacher_id):
-#     """
-#     :param teacher_id:
-#     :return:
-#     """
-#     print(teacher_id)
-#     teacher_net = get_teacher_net(teacher_id)
-#     teacher_info = get_info(teacher_id)
-#     print(teacher_net)
-#     print(teacher_info)
-#     return render_template("teacher.html", teacher_net=teacher_net, teacher=teacher_info)
 
 
 @search_bp.route("/avatar/<filename>")

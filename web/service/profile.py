@@ -124,6 +124,34 @@ def get_teacher_name_by_id(team_id):
     return result["name"]
 
 
+def get_institution_dimension_info(school, institution):
+    """
+    获取学院的各维度信息
+    :return:
+    """
+    # 1. 获取学院下所有的教师
+    teacher_id_dict = profile_dao.get_institution_teacher_ids(school, institution)
+    teacher_ids = [dic["id"] for dic in teacher_id_dict]
+    # 2. 根据成员id获取这些成员中的头衔信息，专利数量，项目数量，所在的实验室列表
+    dimension_info = get_teachers_info(list(teacher_ids), school)
+    researcher_num = len(list(teacher_ids))
+    # 3. 根据获取的各维度信息进行综合打分
+    school_level_score = cal_school_score_by_discipline(dimension_info["good_discipline_num"])
+    achieve_num = cal_achieve_score(dimension_info["patent_num"])
+    researcher_num_score = cal_researcher_num_score(researcher_num)
+    researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
+    lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    project_score = cal_project_num_score(dimension_info["project_num"])
+    return {
+        "school_level_score":  school_level_score,
+        "achieve_num": achieve_num,
+        "researcher_num_score":  researcher_num_score,
+        "researcher_level_score":  researcher_level_score,
+        "lab_score":  lab_score,
+        "project_score": project_score
+    }
+
+
 def get_team_dimension_info(team_id, school):
     """
     获取团队的各维度信息

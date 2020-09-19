@@ -127,6 +127,30 @@ def get_cooperate_rel_by_team_id_list(team_id_list, institution, patent_num):
         print(e)
 
 
+def get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, patent_num):
+    """
+    根据学院中的team_id_list 获取 学院内部的社区关系
+    :param patent_num:
+    :param institution:
+    :param team_id_list:
+    :return:
+    """
+    try:
+        cql = """
+                   match p=(t1:Teacher)-[r:cooperate]-(t2:Teacher) 
+                    where t1.team in [{ids_str}] and t2.team in [{ids_str}] 
+                    and t1.patent > 0 
+                    and t1.patent > {patent_num} and t2.patent > {patent_num}
+                    and t1.institution = \"{institution}\" and t2.institution = \"{institution}\"
+                    return NODES(p) as nodes, RELATIONSHIPS(p) as relationship
+                """
+        cql = compose_cql2(cql, team_id_list, institution, patent_num)
+        print(cql)
+        back = NeoOperator.graph.run(cql).data()
+        return back
+    except Exception as e:
+        print(e)
+
 def compose_cql2(cql, _list, institution, patent_num):
     """
     组合查询cql中有in的语句,
@@ -155,6 +179,25 @@ def compose_cql(cql, _list):
         ids_str += str(_id) + ","
     ids_str = ids_str[0:-1]
     return cql.format(ids_str=ids_str)
+
+
+def update_node_visit_status(teacher_id, status):
+    """
+    更新教师节点的拜访状态
+    :param teacher_id:
+    :param status:
+    :return:
+    """
+
+    try:
+        cql = """
+            match (t:Teacher) where t.id = {teacher_id}  set t.visit_status = {status} return t
+        """.format(teacher_id=teacher_id, status=status)
+        print(cql)
+        back = NeoOperator.graph.run(cql).data()
+        return back
+    except Exception as e:
+        print(e)
 
 
 def format2Echarts(data):

@@ -140,6 +140,27 @@ def get_cooperate_rel_by_team_id_list(team_id_list, institution):
     return result
 
 
+def get_institution_cooperate_rel_by_team_id_list(team_id_list, institution):
+    """
+    根据学院中的team_id_list 获取 学院内部的社区关系
+    :param institution:
+    :param team_id_list:
+    :return:
+    """
+    _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
+    result = format2echarts(_data)
+    # if len(result["nodes"]) > 70:
+    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 3)
+    #     result = format2echarts(_data)
+    # if len(result["nodes"]) > 70:
+    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 5)
+    #     result = format2echarts(_data)
+    # if len(result["nodes"]) > 70:
+    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
+    #     result = format2echarts(_data)
+    return result
+
+
 def get_team_ids_by_teacher_ids(teacher_id_list):
     """
     根据教师的id列表获取这些教师对应的team_id
@@ -163,6 +184,15 @@ def get_team_id_list_by_teacher_ids(teacher_id_list):
         if dic["teacher.team"] is not None:
             team_id_list.append(dic["teacher.team"])
     return team_id_list
+
+
+def update_node_visit_status(teacher_id, status):
+    """
+    更新节点的拜访状态：0未联系过、1联系过、2做过活动、3签过合同、4创业
+    :return:
+    """
+    result = ego_net.update_node_visit_status(teacher_id, status)
+    return result
 
 
 if __name__ == '__main__':

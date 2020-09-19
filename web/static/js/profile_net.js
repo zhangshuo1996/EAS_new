@@ -48,28 +48,6 @@ let data2 = {
 
 };
 
-
-
-/*
-获取学院的内部关系数据，并重新加载关系图
-by zhang
- */
-function getInstitutionRelation(school, institution){
-    team_relationship_chart.showLoading();
-    $("#institution_name").html(institution + "专家团队");
-    $.ajax({
-        type: "get",
-        url: "/profile/getInstitutionRelation",
-        data: {"school": school, "institution": institution},
-        dataType: "json",
-        success: function (json_data) {
-            let graph_data = convert_graph_data(json_data);
-            reloadGraph(graph_data);
-        }
-    })
-}
-
-
 /*
 获取该团队的内部关系数据，并重新加载关系图
 by zhang
@@ -78,7 +56,7 @@ function getTeamRelation(team_id, institution){
     team_relationship_chart.showLoading();
     $.ajax({
         type: "get",
-        url: "/search/getInstitutionRelation",
+        url: "/search/getTeamRelation",
         data: {"team_id": team_id, "institution": institution},
         dataType: "json",
         success: function (json_data) {
@@ -90,8 +68,8 @@ function getTeamRelation(team_id, institution){
     })
 }
 
-/*
-转换关系图数据
+/**
+ * 转换关系图数据
  */
 function convert_graph_data(data) {
     let temp_links = data.links;
@@ -255,7 +233,7 @@ let graphOption = {
  * 重新加载关系图数据，把数据赋值给graphOption中的data
  * @param data 关系图数据
  */
-function reloadGraph(data){
+function reloadGraph(data, layout="circular"){
     if(!"nodes" in data) return;
     let links = data.links;
     graphOption.series[0].data = data.nodes;
@@ -264,9 +242,10 @@ function reloadGraph(data){
     categories[0] = {name: ''};
     for (let i = 0; i < data.community; i++) {
         categories[i] = {
-            name: data.core_node[String(i)]+"团队"
+            name: data.core_node[String(i)] + "团队"
         };
     }
+    graphOption.series[0].layout = layout;
     graphOption.series[0].categories = categories;
     // graphOption.legend = [{
     //     data: categories.map(function (a) {

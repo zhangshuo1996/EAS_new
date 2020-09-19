@@ -78,19 +78,42 @@ def get_institution_patent_num():
     return result
 
 
-@profile_bp.route("/getInstitutionRelation")
-def getInstitutionRelation():
+@profile_bp.route("/institution_profile/<school>/<institution>")
+def institution_profile(school, institution):
     """
-    获取该学院中的关系数据
+    展示学院内的画像，包括学院内部的社交关系 以及 学院内部的各项指标评估
+    :return:
+    """
+    # school = request.args.get("school")
+    # institution = request.args.get("institution")
+
+    return render_template("institution.html", school=school, institution=institution)
+
+
+@profile_bp.route("/get_institution_relation")
+def get_institution_relation():
+    """
+    获取学院内部的社交关系
     :return:
     """
     school = request.args.get("school")
     institution = request.args.get("institution")
     teacher_ids = profile_service.get_institution_teacher_ids(school, institution)
     team_id_list = relationService.get_team_id_list_by_teacher_ids(teacher_ids)
-    result = relationService.get_cooperate_rel_by_team_id_list(team_id_list, institution)
-    # result = relationService.get_cooperate_rel(teacher_ids)
+    result = relationService.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution)
     return result
+
+
+@profile_bp.route("/get_institution_dimension_info")
+def get_institution_dimension_info():
+    """
+    获取学院内部的各项指标评估
+    :return:
+    """
+    school = request.args.get("school")
+    institution = request.args.get("institution")
+    result2 = profile_service.get_institution_dimension_info(school, institution)
+    return result2
 
 
 @profile_bp.route("/get_team_dimension_info")
@@ -118,6 +141,19 @@ def get_school_normalize_dimension_score():
     return result
 
 
+@profile_bp.route("/update_node_visit_status")
+def update_node_visit_status():
+    """
+    更新节点的拜访状态：0未联系过、1联系过、2做过活动、3签过合同、4创业
+    :return:
+    """
+    teacher_id = request.args.get("teacher_id")
+    visit_status = request.args.get("visit_status")
+    relationService.update_node_visit_status(teacher_id, visit_status)
+    return {"success": True}
+
+
+# TODO： 测试词云代码
 @profile_bp.route('/word_cloud')
 def word_cloud():
     """
