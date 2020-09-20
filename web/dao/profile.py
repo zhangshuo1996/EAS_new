@@ -39,7 +39,7 @@ def get_school_lab(school):
     """
     sql = """
         select i.lab
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
         where s.name = ? and i.lab is not null and i.lab != ""
@@ -58,10 +58,10 @@ def get_institution_patent_num(school):
         from 
         (
         select i.institution, count(i.institution) cnt
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN c_inventor_patent_backup ip
+        LEFT JOIN inventor_patent ip
         on i.id = ip.inventor_id
         LEFT JOIN patent p
         on ip.patent_id = p.id
@@ -84,10 +84,10 @@ def get_institution_teacher_id(school, institution):
     """
     sql = """
         select  i.id teacher_id
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN c_inventor_patent_backup ip
+        LEFT JOIN inventor_patent ip
         on i.id = ip.inventor_id
         where s.name = ? and i.institution = ?
         GROUP BY i.id
@@ -103,7 +103,7 @@ def get_teacher_name_by_id(team_id):
     """
     sql = """
         select name
-        from clean_inventor_backup i
+        from clean_inventor i
         where id = ?
     """
     return mysql.select_one(sql, team_id)
@@ -118,7 +118,7 @@ def get_institution_teacher_ids(school, institution):
     """
     sql = """
         select i.id
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
         where s.name = ? and i.institution = ?
@@ -134,7 +134,7 @@ def get_labs_honors_by_teacher_ids(teacher_ids):
     """
     sql = """
         select lab, honor
-        from clean_inventor_backup 
+        from clean_inventor 
         where id in (
     """
     if len(teacher_ids) == 0:
@@ -154,8 +154,8 @@ def get_project_num_by_teacher_ids(teacher_ids):
     """
     sql = """
         select count(1) cnt
-        from clean_inventor_backup i
-        LEFT JOIN project p
+        from clean_inventor i
+        LEFT JOIN funds p
         on i.id = p.teacher_id
         where i.id in (
     """
@@ -176,8 +176,8 @@ def get_patent_num_by_teacher_ids(teacher_ids):
     """
     sql = """
         select ip.patent_id
-        from clean_inventor_backup i
-        LEFT JOIN c_inventor_patent_backup ip
+        from clean_inventor i
+        LEFT JOIN inventor_patent ip
         on i.id = ip.inventor_id
         where i.id in (
     """
@@ -212,7 +212,7 @@ def get_school_teacher_info(school):
     """
     sql = """
         select i.lab, i.honor
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
         where s.name = ?
@@ -230,10 +230,10 @@ def get_school_teacher_patent_num(school):
         select count(1) cnt
         from (
         select ip.patent_id
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN c_inventor_patent_backup ip
+        LEFT JOIN inventor_patent ip
         on ip.inventor_id = i.id
         where s.name = ?
         GROUP BY ip.patent_id
@@ -252,10 +252,10 @@ def get_school_teacher_num(school):
         select count(1) cnt
         from (
         select ip.inventor_id
-        from clean_inventor_backup i
+        from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN c_inventor_patent_backup ip
+        LEFT JOIN inventor_patent ip
         on ip.inventor_id = i.id
         where s.name = ? and institution is not null
         GROUP BY ip.inventor_id

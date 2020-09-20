@@ -463,14 +463,15 @@ function set_radar_option(dimension, data, chart, teacher_name="点击右图节�
         },
         legend: {
             left: 'center',
+            // backgroundColor: '#ccc',
             data: ['分布']
         },
         radar: [
             {},
             {
                 indicator: dimension,
-                radius: 100,
-                center: ['50%', '60%'],
+                radius: 90,
+                center: ['50%', '51%'],
                 splitArea: {
                     areaStyle: {
                         color: ['rgba(255, 255, 255, 0)'],

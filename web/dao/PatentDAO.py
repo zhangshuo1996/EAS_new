@@ -31,8 +31,8 @@ class PatentDAO():
         """
         sql = """
             select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name, p.publication_number
-            from clean_inventor_backup i
-            LEFT JOIN c_inventor_patent_backup ip
+            from clean_inventor i
+            LEFT JOIN inventor_patent ip
             on i.id = ip.inventor_id
             LEFT JOIN patent p
             on ip.patent_id = p.id
@@ -74,7 +74,7 @@ class PatentDAO():
         sql = """
             select i.id teacher_id, i.name  name, s.name school, s.id school_id, i.lab,
             i.institution institution, "教授" title, 111 institution_id
-            from clean_inventor_backup i
+            from clean_inventor i
             LEFT JOIN school s
             on i.school_id = s.id
             where i.id in (
@@ -107,7 +107,7 @@ class PatentDAO():
         """
         sql = """
             select p.teacher_id, p.name project_name
-            from project p
+            from funds p
             where p.teacher_id in (
         """
         for d in self.teacher_patent:
