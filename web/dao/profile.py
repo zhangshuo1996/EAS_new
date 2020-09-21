@@ -61,7 +61,7 @@ def get_institution_patent_num(school):
         from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN inventor_patent ip
+        LEFT JOIN clean_inventor_patent ip
         on i.id = ip.inventor_id
         LEFT JOIN patent p
         on ip.patent_id = p.id
@@ -87,7 +87,7 @@ def get_institution_teacher_id(school, institution):
         from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN inventor_patent ip
+        LEFT JOIN clean_inventor_patent ip
         on i.id = ip.inventor_id
         where s.name = ? and i.institution = ?
         GROUP BY i.id
@@ -168,6 +168,24 @@ def get_project_num_by_teacher_ids(teacher_ids):
     return mysql.select_one(sql)
 
 
+def get_project_num_by_school(school):
+    """
+    根据多个教师id 获取这些人的项目总数
+    :param school:
+    :return:
+    """
+    sql = """
+        select count(1) cnt
+        from clean_inventor i
+        LEFT JOIN funds p
+        on i.id = p.teacher_id
+        left join school s 
+        on s.id = i.school_id
+        where s.name = ?
+    """
+    return mysql.select_one(sql, school)
+
+
 def get_patent_num_by_teacher_ids(teacher_ids):
     """
     获取多个教师的所有专利id,以此获取其成果数量
@@ -177,7 +195,7 @@ def get_patent_num_by_teacher_ids(teacher_ids):
     sql = """
         select ip.patent_id
         from clean_inventor i
-        LEFT JOIN inventor_patent ip
+        LEFT JOIN clean_inventor_patent ip
         on i.id = ip.inventor_id
         where i.id in (
     """
@@ -233,7 +251,7 @@ def get_school_teacher_patent_num(school):
         from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN inventor_patent ip
+        LEFT JOIN clean_inventor_patent ip
         on ip.inventor_id = i.id
         where s.name = ?
         GROUP BY ip.patent_id
@@ -255,7 +273,7 @@ def get_school_teacher_num(school):
         from clean_inventor i
         LEFT JOIN school s
         on i.school_id = s.id
-        LEFT JOIN inventor_patent ip
+        LEFT JOIN clean_inventor_patent ip
         on ip.inventor_id = i.id
         where s.name = ? and institution is not null
         GROUP BY ip.inventor_id

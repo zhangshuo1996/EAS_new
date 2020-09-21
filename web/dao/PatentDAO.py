@@ -32,7 +32,7 @@ class PatentDAO():
         sql = """
             select i.id teacher_id, i.name teacher_name, p.id patent_id, p.title patent_name, s.id school_id, s.name school_name, p.publication_number
             from clean_inventor i
-            LEFT JOIN inventor_patent ip
+            LEFT JOIN clean_inventor_patent ip
             on i.id = ip.inventor_id
             LEFT JOIN patent p
             on ip.patent_id = p.id
@@ -108,7 +108,7 @@ class PatentDAO():
         sql = """
             select p.teacher_id, p.name project_name
             from funds p
-            where p.teacher_id in (
+            where p.category = 1 and p.teacher_id in (
         """
         for d in self.teacher_patent:
             teacher_id = d["teacher_id"]

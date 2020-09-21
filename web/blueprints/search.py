@@ -111,7 +111,7 @@ def get_pdf3():
     """
     page_num = request.form.get("page_num")
     outcome = current_app.outcome
-    doc_path, filename = make_pdf.do_test(page_num, outcome)
-    return send_from_directory(doc_path, filename)
+    doc_path, filename = make_pdf.generate_doc(page_num, outcome)
+    return send_from_directory(doc_path, filename, as_attachment=True)
 
 

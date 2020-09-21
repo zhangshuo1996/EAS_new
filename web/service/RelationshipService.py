@@ -147,17 +147,23 @@ def get_institution_cooperate_rel_by_team_id_list(team_id_list, institution):
     :param team_id_list:
     :return:
     """
-    _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
+    _data = []
+    if len(team_id_list) > 350:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 12)
+    elif len(team_id_list) > 300:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 10)
+    elif len(team_id_list) > 250:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
+    elif len(team_id_list) > 200:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 6)
+    elif len(team_id_list) > 100:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 4)
+    elif len(team_id_list) > 50:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 2)
+    else:
+        _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 0)
+
     result = format2echarts(_data)
-    # if len(result["nodes"]) > 70:
-    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 3)
-    #     result = format2echarts(_data)
-    # if len(result["nodes"]) > 70:
-    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 5)
-    #     result = format2echarts(_data)
-    # if len(result["nodes"]) > 70:
-    #     _data = ego_net.get_institution_cooperate_rel_by_team_id_list(team_id_list, institution, 8)
-    #     result = format2echarts(_data)
     return result
 
 

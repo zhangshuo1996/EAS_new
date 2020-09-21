@@ -58,7 +58,7 @@ function get_institution_patent_num(school){
  * 获取学校归一化之后的各维度分数
  * @param school
  */
-function get_school_normalize_dimension_score(school="东南大学") {
+function get_school_normalize_dimension_score() {
     $.ajax({
         type: "get",
         url: "/profile/get_school_normalize_dimension_score",

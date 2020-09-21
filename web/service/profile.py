@@ -1,5 +1,6 @@
 from web.dao import profile as profile_dao
 from web.service import RelationshipService as relationService
+from web.service.CalScore import CalSchoolScore, CalInstitutionScore, CalTeamScore
 from flask import send_from_directory
 import math
 import os
@@ -136,12 +137,13 @@ def get_institution_dimension_info(school, institution):
     dimension_info = get_teachers_info(list(teacher_ids), school)
     researcher_num = len(list(teacher_ids))
     # 3. 根据获取的各维度信息进行综合打分
-    school_level_score = cal_school_score_by_discipline(dimension_info["good_discipline_num"])
-    achieve_num = cal_achieve_score(dimension_info["patent_num"])
-    researcher_num_score = cal_researcher_num_score(researcher_num)
-    researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
-    lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
-    project_score = cal_project_num_score(dimension_info["project_num"])
+    c = CalInstitutionScore()
+    school_level_score = c.cal_school_score_by_discipline(dimension_info["good_discipline_num"])
+    achieve_num = c.cal_achieve_score(dimension_info["patent_num"])
+    researcher_num_score = c.cal_researcher_num_score(researcher_num)
+    researcher_level_score = c.cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
+    lab_score = c.cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    project_score = c.cal_project_num_score(dimension_info["project_num"])
     return {
         "school_level_score":  school_level_score,
         "achieve_num": achieve_num,
@@ -163,12 +165,13 @@ def get_team_dimension_info(team_id, school):
     dimension_info = get_teachers_info(list(teacher_ids), school)
     researcher_num = len(list(teacher_ids))
     # 3. 根据获取的各维度信息进行综合打分
-    school_level_score = cal_school_score_by_discipline(dimension_info["good_discipline_num"])
-    achieve_num = cal_achieve_score(dimension_info["patent_num"])
-    researcher_num_score = cal_researcher_num_score(researcher_num)
-    researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
-    lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
-    project_score = cal_project_num_score(dimension_info["project_num"])
+    c = CalTeamScore()
+    school_level_score = c.cal_school_score_by_discipline(dimension_info["good_discipline_num"])
+    achieve_num = c.cal_achieve_score(dimension_info["patent_num"])
+    researcher_num_score = c.cal_researcher_num_score(researcher_num)
+    researcher_level_score = c.cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
+    lab_score = c.cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    project_score = c.cal_project_num_score(dimension_info["project_num"])
     return {
         "school_level_score":  school_level_score,
         "achieve_num": achieve_num,
@@ -244,11 +247,12 @@ def get_school_normalize_dimension_score(school):
     # 1. 获取学校中所有教师的头衔信息，专利数量，项目数量，所在的实验室列表
     dimension_info = get_school_dimensions_info(school)
     # 2. 根据获取的各维度信息进行综合打分
-    school_level_score = cal_school_score_by_discipline(dimension_info["good_discipline_num"])
-    achieve_num = cal_achieve_score(dimension_info["patent_num"])
-    researcher_num_score = cal_researcher_num_score(dimension_info["researcher_num"])
-    researcher_level_score = cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
-    lab_score = cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
+    c = CalSchoolScore()
+    school_level_score = c.cal_school_score_by_discipline(dimension_info["good_discipline_num"])
+    achieve_num = c.cal_achieve_score(dimension_info["patent_num"])
+    researcher_num_score = c.cal_researcher_num_score(dimension_info["researcher_num"])
+    researcher_level_score = c.cal_researcher_level_score(dimension_info["academician_num"], dimension_info["excellent_young"])
+    lab_score = c.cal_lab_score(dimension_info["national_lab_num"], dimension_info["province_lab_num"])
     return {
         "school_level_score":  school_level_score,
         "achieve_num": achieve_num,
@@ -280,6 +284,8 @@ def get_school_dimensions_info(school):
     discipline_num = discipline[0]["cnt"]
     # 获取该学校的研究人员数量
     researcher_num = profile_dao.get_school_teacher_num(school)["cnt"]
+    # 获取学校下的项目数量
+    project_num = profile_dao.get_project_num_by_school(school)["cnt"]
     dimensions_info = {
         "academician_num": academician_num,  # 院士数量
         "excellent_young": excellent_young,  # 长江、杰青数量
@@ -288,116 +294,6 @@ def get_school_dimensions_info(school):
         "patent_num": patent_num,  # 专利数量
         "good_discipline_num": discipline_num,  # 该学校的一流学科数量
         "researcher_num": researcher_num,  # 该学校研究人员数量
+        "project_num": project_num,  # 该学校项目的数量
     }
     return dimensions_info
-
-
-def cal_school_score_by_discipline(discipline_num):
-    """
-    根据一流学科数量为学校水平打分
-    :param discipline_num:
-    :return:
-    """
-    if discipline_num == 0:
-        return 50
-    elif discipline_num <= 1:
-        return 55
-    elif discipline_num <= 3:
-        return 60
-    elif discipline_num <= 6:
-        return 70
-    elif discipline_num <= 10:
-        return 80
-    elif discipline_num <= 20:
-        return 90
-    else:
-        return 100
-
-
-def cal_achieve_score(patent_num):
-    """
-    计算成果数量得分
-    :param patent_num:
-    :return:
-    """
-    if patent_num > 1000:
-        return 100
-    elif patent_num > 800:
-        return 90
-    elif patent_num > 500:
-        return 80
-    elif patent_num > 200:
-        return 70
-    elif patent_num > 100:
-        return 60
-    return 50
-
-
-def cal_researcher_num_score(researcher_nums):
-    """
-    计算研究人员数量得分
-    :param researcher_nums:
-    :return:
-    """
-    if researcher_nums > 50:
-        return 100
-    elif researcher_nums > 40:
-        return 90
-    elif researcher_nums > 30:
-        return 80
-    elif researcher_nums > 20:
-        return 70
-    elif researcher_nums > 10:
-        return 60
-    return 50
-
-
-def cal_researcher_level_score(academician_num, excellent_young):
-    """
-    计算研究人员水平
-    :param academician_num:
-    :param excellent_young:
-    :return:
-    """
-    if academician_num >= 1:
-        return 100
-    if excellent_young == 1:
-        return 80
-    if excellent_young > 1:
-        return 90
-    return 70
-
-
-def cal_lab_score(national_lab_num, province_lab_num):
-    """
-    计算实验平台得分
-    :param national_lab_num:
-    :param province_lab_num:
-    :return:
-    """
-    if national_lab_num >= 1:
-        return 100
-    if province_lab_num > 1:
-        return 90
-    if province_lab_num == 1:
-        return 80
-    return 60
-
-
-def cal_project_num_score(project_num):
-    """
-    计算团队项目数量得分
-    :param project_num:
-    :return:
-    """
-    if project_num > 200:
-        return 100
-    if project_num > 150:
-        return 90
-    if project_num > 100:
-        return 80
-    if project_num > 50:
-        return 70
-    if project_num > 30:
-        return 60
-    return 50

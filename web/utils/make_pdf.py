@@ -9,7 +9,7 @@ from docx.shared import Inches, Pt, Cm
 import os
 
 
-def do_test(page_num, outcome):
+def generate_doc(page_num, outcome):
     """
 
     :return:
@@ -19,6 +19,10 @@ def do_test(page_num, outcome):
 
     # 打开文档
     document = Document()
+
+    # 设置字体
+    document.styles['Normal'].font.name = u'宋体'
+    document.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'宋体')
 
     # 头部
     paragraph = document.add_paragraph()
@@ -38,7 +42,7 @@ def do_test(page_num, outcome):
     # 技术需求文本
     paragraph = document.add_paragraph()
     # 设置字号
-    run = paragraph.add_run(u'昆山国显光电有限公司')
+    run = paragraph.add_run(u'请填写公司名')
     p_format = paragraph.paragraph_format
     p_format.first_line_indent = Inches(0.2)  # 首行缩进
     run.font.size = Pt(12)
@@ -52,7 +56,7 @@ def do_test(page_num, outcome):
     # 技术需求文本
     paragraph = document.add_paragraph()
     # 设置字号
-    run = paragraph.add_run(u' 本产品需要*********技术')  # TODO： 缩进？？
+    run = paragraph.add_run(u' 请填写技术需求描述')  # TODO： 缩进？？
     p_format = paragraph.paragraph_format
     p_format.first_line_indent = Inches(0.2)  # 首行缩进
     run.font.size = Pt(12)
@@ -87,13 +91,13 @@ def do_test(page_num, outcome):
     hdr_cells[1].text = result["project_str"]
 
     # 调整列宽
-    table.cell(0, 0).width = Inches(1)
-    table.cell(0, 1).width = Inches(9)
+    table.cell(0, 0).width = Inches(2)
+    table.cell(0, 1).width = Inches(8)
 
     # 保存文件
     cur_path = os.getcwd()
     doc_path = os.path.join(cur_path, "pdf")
-    file_name = "demo.docx"
+    file_name = "result.docx"
     document.save(os.path.join(doc_path, file_name))
 
     return doc_path, file_name
